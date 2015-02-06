@@ -4,7 +4,7 @@ import akka.actor.Actor
 import feh.tec.agents.comm._
 
 trait AgentActor extends Actor{
-  val id: AgentId
+  implicit val id: AgentId
 
   def systemMessageReceived: PartialFunction[SystemMessage, Unit]
   def messageReceived: PartialFunction[Message, Unit]
@@ -31,6 +31,9 @@ trait AgentActor extends Actor{
   protected def onMessageSent(msg: Message, to: AgentId)
 
   protected def unknownSystemMessage(sys: SystemMessage)
+
+  def start()
+  def stop()
 }
 
 trait Negotiating{

@@ -36,24 +36,32 @@ object Negotiation{
     def set[T](negVar: NegotiationVar[T], value: T) = {
       val old = getNegVar(negVar).value
       getNegVar(negVar).value = value
-      notifyVarUpdated(negVar, old, value)
+      notifyVarUpdated(id, negVar, old, value)
     }
     def transform[T](negVar: NegotiationVar[T], f: T => T) = {
       val old = getNegVar(negVar).value
       val newVal = f(old)
       getNegVar(negVar).value = newVal
-      notifyVarUpdated(negVar, old, newVal)
+      notifyVarUpdated(id, negVar, old, newVal)
     }
 
-    protected def notifyVarUpdated[T](upd: Negotiation.VarUpdated[T])
+    def report: Map[NegotiationVar[_], Any] = negVars.mapValues(_.valueOpt.orNull)
 
+    protected def notifyVarUpdated[T](upd: Negotiation.VarUpdated[T]): Unit
+
+    protected def notifyVarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: T, newValue: T): Unit =
+      notifyVarUpdated(Negotiation.VarUpdated(negId, negVar, oldValue, newValue))
 
     //  override def equals(obj: scala.Any) = PartialFunction.cond(obj){
     //    case that: Negotiation => that.id == this.id
     //  }
     override def toString = s"Negotiation(${id.name})"
+
+    // create scope var
+    new NegVar(NegotiationVar.Scope, None)
   }
 
+  /** Provides defineVar object for defining negotiation states */
   trait VarsCreation{
     self: NegotiationBase =>
 
@@ -76,7 +84,8 @@ object NegotiationVar{
 
   case class UndefinedException(negVar: NegotiationVar[_], negotiation: Negotiation.NegotiationBase)
     extends Exception(s"$negVar is undefined in $negotiation")
-  
+
+  case object Scope extends NegotiationVar[Set[NegotiatingAgentId]]
   case object State extends NegotiationVar[NegotiationState]
   case object Priority extends NegotiationVar[Int]
   case class Issue[T](issue: Var[T]) extends NegotiationVar[T]
