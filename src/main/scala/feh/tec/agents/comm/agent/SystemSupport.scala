@@ -19,6 +19,14 @@ trait SystemSupport {
 
 }
 
+trait ReportingSystemSupport extends Reporting with SystemSupport{
+  agent: AgentActor =>
+
+  protected def systemMessageFraud(fraud: SystemMessage) = reportTo ! Report.SystemMessageFraud(fraud)
+
+  protected def unknownSystemMessage(sys: SystemMessage) = reportTo ! Report.UnknownSystemMessage(sys)
+}
+
 trait NegotiationSystemSupport extends Negotiating with SystemSupport{
   agent: AgentActor =>
 
@@ -32,10 +40,15 @@ trait NegotiationSystemSupport extends Negotiating with SystemSupport{
     negotiation(of).transform(NegotiationVar.Scope, upd)
 }
 
-trait NegotiationReportsSystemSupport extends ReportingNegotiations with NegotiationSystemSupport{
+trait NegotiationReportsSystemSupport extends ReportingNegotiations
+  with ReportingSystemSupport
+  with NegotiationSystemSupport
+{
   agent: AgentActor =>
 
   override def systemMessageReceived = super.systemMessageReceived orElse{
-    case msg@SystemMessage.ReportStates(of) => msg.sender.ref ! Report.StatesReport(of, negotiation(of).report)
+    case msg@SystemMessage.ReportStates(of, toSender) =>
+      val report = Report.StatesReport(of, negotiation(of).report)
+      if(toSender) msg.sender.ref ! report else reportTo ! report
   }
 }

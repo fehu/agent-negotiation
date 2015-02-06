@@ -39,7 +39,7 @@ trait AgentActor extends Actor{
 trait Negotiating{
   agent: AgentActor =>
 
-  protected def initNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
+  protected val initNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
 
   protected def onStateChanged(change: Negotiation.VarUpdated[_])
 

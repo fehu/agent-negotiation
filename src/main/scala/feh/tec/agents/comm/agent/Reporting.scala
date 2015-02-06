@@ -1,7 +1,7 @@
 package feh.tec.agents.comm.agent
 
 import feh.tec.agents.comm.Negotiation.VarUpdated
-import feh.tec.agents.comm.{Report, Message, AgentId}
+import feh.tec.agents.comm.{SystemAgentId, Report, Message, AgentId}
 
 trait Reporting{
   agent: AgentActor =>
@@ -12,16 +12,18 @@ trait Reporting{
     var messageUnhandled  = true
   }
 
-  val reportTo: AgentId
+  val reportTo: SystemAgentId
+
+//  def report(msg: Report) = reportTo.ref ! msg
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean): Unit =
     if(unhandled)
-      if(Reporting.messageUnhandled)  reportTo.ref ! Report.MessageReceived(msg, unhandled)
+      if(Reporting.messageUnhandled)  reportTo ! Report.MessageReceived(msg, unhandled)
       else
-      if(Reporting.messageReceived)   reportTo.ref ! Report.MessageReceived(msg, unhandled)
+      if(Reporting.messageReceived)   reportTo ! Report.MessageReceived(msg, unhandled)
 
   protected def onMessageSent(msg: Message, to: AgentId): Unit =
-    if(Reporting.messageSent) reportTo.ref ! Report.MessageSent(msg, to)
+    if(to != reportTo && Reporting.messageSent) reportTo ! Report.MessageSent(msg, to)
 }
 
 trait ReportingNegotiations extends Reporting{
@@ -35,5 +37,5 @@ trait ReportingNegotiations extends Reporting{
   }
 
   protected def onStateChanged(change: VarUpdated[_]): Unit =
-    if(Reporting.stateChanged) reportTo.ref ! Report.StateChanged(change)
+    if(Reporting.stateChanged) reportTo ! Report.StateChanged(change)
 }

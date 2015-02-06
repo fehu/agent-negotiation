@@ -12,7 +12,7 @@ trait Message extends HasUUID with Equals{
   val asString: String
 
   def from = sender
-  override def toString = s"$tpe($asString)"
+  override def toString = s"$tpe($asString) by $sender"
 }
 
 trait NegotiationMessage extends Message{
@@ -43,7 +43,7 @@ object SystemMessage{
   case class RmScope (neg: NegotiationId, scope: Set[NegotiatingAgentId])
                      (implicit val sender: AgentId) extends NegotiationScopeControl("Rm")
 
-  case class ReportStates(of: NegotiationId)(implicit val sender: AgentId) extends UUIDed() with SystemMessage{
+  case class ReportStates(of: NegotiationId, toMe: Boolean)(implicit val sender: AgentId) extends UUIDed() with SystemMessage{
     val tpe = "ReportStates"
     val asString = s"of $of"
   }

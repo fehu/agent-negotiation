@@ -30,9 +30,18 @@ object Report{
     val asString = negotiation.toString + " -- " + states.map{ case (k, v) => s"$k: $v" }.mkString(", ")
   }
 
-  case class StateChanged(change: Negotiation.VarUpdated[_])
-                         (implicit val sender: AgentId) extends Report{
+  case class StateChanged(change: Negotiation.VarUpdated[_])(implicit val sender: AgentId) extends Report{
     val tpe = "StateChanged"
     val asString = change.toString
+  }
+
+  case class SystemMessageFraud(fraud: SystemMessage)(implicit val sender: AgentId) extends Report{
+    val tpe = "SystemMessageFraud"
+    val asString = fraud.toString
+  }
+
+  case class UnknownSystemMessage(unknown: SystemMessage)(implicit val sender: AgentId) extends Report{
+    val tpe = "UnknownSystemMessage"
+    val asString = unknown.toString
   }
 }
