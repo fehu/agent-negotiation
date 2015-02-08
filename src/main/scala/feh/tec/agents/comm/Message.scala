@@ -3,7 +3,7 @@ package feh.tec.agents.comm
 import feh.util.{UUIDed, HasUUID}
 
 trait Message extends HasUUID with Equals{
-  val sender: AgentId
+  val sender: AgentRef
 
   /** Message type */
   val tpe: String
@@ -27,23 +27,23 @@ object SystemMessage{
   }
   protected  abstract class NegotiationScopeControl(doWithScope: String) extends UUIDed() with SystemMessage {
     val neg: NegotiationId
-    val scope: Set[NegotiatingAgentId]
+    val scope: Set[NegotiatingAgentRef]
 
     val tpe = doWithScope + "Scope"
     val asString = s"$neg: ${scope.mkString(", ")}"
   }
 
-  case class Start(implicit val sender: AgentId) extends NoContentSystemMessage("Start")
-  case class Stop (implicit val sender: AgentId) extends NoContentSystemMessage("Stop")
+  case class Start(implicit val sender: AgentRef) extends NoContentSystemMessage("Start")
+  case class Stop (implicit val sender: AgentRef) extends NoContentSystemMessage("Stop")
 
-  case class SetScope(neg: NegotiationId, scope: Set[NegotiatingAgentId])
-                     (implicit val sender: AgentId) extends NegotiationScopeControl("Set")
-  case class AddScope(neg: NegotiationId, scope: Set[NegotiatingAgentId])
-                     (implicit val sender: AgentId) extends NegotiationScopeControl("Add")
-  case class RmScope (neg: NegotiationId, scope: Set[NegotiatingAgentId])
-                     (implicit val sender: AgentId) extends NegotiationScopeControl("Rm")
+  case class SetScope(neg: NegotiationId, scope: Set[NegotiatingAgentRef])
+                     (implicit val sender: AgentRef) extends NegotiationScopeControl("Set")
+  case class AddScope(neg: NegotiationId, scope: Set[NegotiatingAgentRef])
+                     (implicit val sender: AgentRef) extends NegotiationScopeControl("Add")
+  case class RmScope (neg: NegotiationId, scope: Set[NegotiatingAgentRef])
+                     (implicit val sender: AgentRef) extends NegotiationScopeControl("Rm")
 
-  case class ReportStates(of: NegotiationId, toMe: Boolean)(implicit val sender: AgentId) extends UUIDed() with SystemMessage{
+  case class ReportStates(of: NegotiationId, toMe: Boolean)(implicit val sender: AgentRef) extends UUIDed() with SystemMessage{
     val tpe = "ReportStates"
     val asString = s"of $of"
   }

@@ -18,29 +18,29 @@ object Report{
     val sender = msg.sender
   }
 
-  case class MessageSent(msg: Message, to: AgentId) extends Report{
+  case class MessageSent(msg: Message, to: AgentRef) extends Report{
     val tpe = "MessageSent"
     val asString = s"$to : $msg"
     val sender = msg.sender
   }
 
   case class StatesReport(negotiation: NegotiationId, states: Map[NegotiationVar[_], Any])
-                         (implicit val sender: AgentId) extends Report{
+                         (implicit val sender: AgentRef) extends Report{
     val tpe = "StatesReport"
     val asString = negotiation.toString + " -- " + states.map{ case (k, v) => s"$k: $v" }.mkString(", ")
   }
 
-  case class StateChanged(change: Negotiation.VarUpdated[_])(implicit val sender: AgentId) extends Report{
+  case class StateChanged(change: Negotiation.VarUpdated[_])(implicit val sender: AgentRef) extends Report{
     val tpe = "StateChanged"
     val asString = change.toString
   }
 
-  case class SystemMessageFraud(fraud: SystemMessage)(implicit val sender: AgentId) extends Report{
+  case class SystemMessageFraud(fraud: SystemMessage)(implicit val sender: AgentRef) extends Report{
     val tpe = "SystemMessageFraud"
     val asString = fraud.toString
   }
 
-  case class UnknownSystemMessage(unknown: SystemMessage)(implicit val sender: AgentId) extends Report{
+  case class UnknownSystemMessage(unknown: SystemMessage)(implicit val sender: AgentRef) extends Report{
     val tpe = "UnknownSystemMessage"
     val asString = unknown.toString
   }

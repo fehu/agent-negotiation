@@ -5,15 +5,18 @@ import akka.actor.ActorRef
 trait Agent extends agent.AgentActor with agent.Reporting with agent.ReportingSystemSupport
 
 trait NegotiatingAgent extends Agent with agent.Negotiating with agent.NegotiationReportsSystemSupport{
-  implicit val id: NegotiatingAgentId
+  val id: NegotiatingAgentId
+  final implicit val ref = NegotiatingAgentRef(id, self)
 }
 
 trait SystemAgent extends agent.AgentActor{
-  implicit val id: SystemAgentId
+  val id: SystemAgentId
+  final implicit val ref = SystemAgentRef(id, self)
 }
 
 trait UserAgent extends agent.AgentActor{
-  implicit val id: UserAgentId
+  val id: UserAgentId
+  final implicit val ref = UserAgentRef(id, self)
 }
 
 
@@ -34,13 +37,26 @@ case class UserAgentRole(role: String) extends AgentRole
 sealed trait AgentId extends Equals{
   val name: String
   val role: AgentRole
-  protected[comm] val ref: ActorRef
 
   override def equals(obj: scala.Any) = obj match {
     case that: AgentId => (that canEqual this) && this.role == that.role && this.name == that.name
   }
 }
 
-case class NegotiatingAgentId(name: String, role: NegotiationRole, protected[comm] val ref: ActorRef) extends AgentId
-case class SystemAgentId(name: String, role: SystemAgentRole, protected[comm] val ref: ActorRef) extends AgentId
-case class UserAgentId(name: String, role: UserAgentRole, protected[comm] val ref: ActorRef) extends AgentId
+case class NegotiatingAgentId(name: String, role: NegotiationRole) extends AgentId
+case class SystemAgentId(name: String, role: SystemAgentRole) extends AgentId
+case class UserAgentId(name: String, role: UserAgentRole) extends AgentId
+
+
+sealed trait AgentRef extends Equals{
+  val id: AgentId
+  protected[comm] val ref: ActorRef
+
+  override def equals(obj: scala.Any) = PartialFunction.cond(obj) {
+    case that: AgentRef => (that canEqual this) && that.id == this.id
+  }
+}
+
+final case class NegotiatingAgentRef(id: NegotiatingAgentId, protected[comm] val ref: ActorRef) extends AgentRef
+final case class SystemAgentRef(id: SystemAgentId, protected[comm] val ref: ActorRef) extends AgentRef
+final case class UserAgentRef(id: UserAgentId, protected[comm] val ref: ActorRef) extends AgentRef

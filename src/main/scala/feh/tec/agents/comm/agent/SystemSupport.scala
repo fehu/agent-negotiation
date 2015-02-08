@@ -12,7 +12,7 @@ trait SystemSupport {
   protected def systemMessageFraud(fraud: SystemMessage)
 
   def systemMessageReceived: PartialFunction[SystemMessage, Unit] = {
-    case fraud if !fraud.sender.isInstanceOf[SystemAgentId] => systemMessageFraud(fraud)
+    case fraud if !fraud.sender.id.isInstanceOf[SystemAgentId] => systemMessageFraud(fraud)
     case _: SystemMessage.Start => start()
     case _: SystemMessage.Stop  => stop()
   }
@@ -36,7 +36,7 @@ trait NegotiationSystemSupport extends Negotiating with SystemSupport{
     case SystemMessage.RmScope (neg, scope) => updateScope(neg, _ -- scope)
   }
 
-  private def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentId] => Set[NegotiatingAgentId]) =
+  private def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef]) =
     negotiation(of).transform(NegotiationVar.Scope, upd)
 }
 

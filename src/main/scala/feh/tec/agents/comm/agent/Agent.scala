@@ -4,12 +4,13 @@ import akka.actor.Actor
 import feh.tec.agents.comm._
 
 trait AgentActor extends Actor{
-  implicit val id: AgentId
+  val id: AgentId
+  implicit val ref: AgentRef
 
   def systemMessageReceived: PartialFunction[SystemMessage, Unit]
   def messageReceived: PartialFunction[Message, Unit]
 
-  implicit class SendMessage(id: AgentId){
+  implicit class SendMessage(id: AgentRef){
     def !(msg: Message) = {
       onMessageSent(msg, id)
       id.ref ! msg
@@ -28,7 +29,7 @@ trait AgentActor extends Actor{
   }
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean)
-  protected def onMessageSent(msg: Message, to: AgentId)
+  protected def onMessageSent(msg: Message, to: AgentRef)
 
   protected def unknownSystemMessage(sys: SystemMessage)
 

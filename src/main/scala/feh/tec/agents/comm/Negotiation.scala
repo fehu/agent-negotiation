@@ -85,7 +85,7 @@ object NegotiationVar{
   case class UndefinedException(negVar: NegotiationVar[_], negotiation: Negotiation.NegotiationBase)
     extends Exception(s"$negVar is undefined in $negotiation")
 
-  case object Scope extends NegotiationVar[Set[NegotiatingAgentId]]
+  case object Scope extends NegotiationVar[Set[NegotiatingAgentRef]]
   case object State extends NegotiationVar[NegotiationState]
   case object Priority extends NegotiationVar[Int]
   case class Issue[T](issue: Var[T]) extends NegotiationVar[T]
