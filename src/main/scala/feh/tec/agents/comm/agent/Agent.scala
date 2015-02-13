@@ -40,12 +40,13 @@ trait AgentActor extends Actor{
 trait Negotiating{
   agent: AgentActor =>
 
-  protected val initNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
+  /**should be called only once*/
+  protected def /*val*/ initializeNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
 
   protected def onStateChanged(change: Negotiation.VarUpdated[_])
 
-  val negotiations: Set[Negotiation] = initNegotiations.map(_(onStateChanged)).toSet
+  val negotiations: Set[Negotiation] = initializeNegotiations.map(_(onStateChanged)).toSet
 
   private val negotiationsMap = negotiations.map(n => n.id -> n).toMap
   def negotiation(id: NegotiationId): Negotiation = negotiationsMap(id)
-  }
+  def eachNegotiation(f: (Negotiation => Unit)*) = negotiations.foreach(neg => f.foreach(_(neg)))
