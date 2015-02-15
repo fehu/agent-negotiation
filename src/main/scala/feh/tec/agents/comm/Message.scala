@@ -17,6 +17,8 @@ trait Message extends HasUUID with Equals{
 
 trait NegotiationMessage extends Message{
   val negotiation: NegotiationId
+
+  override def toString = s"$tpe($negotiation: $asString) by $sender"
 }
 
 trait SystemMessage extends Message

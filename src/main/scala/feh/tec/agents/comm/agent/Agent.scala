@@ -48,5 +48,8 @@ trait Negotiating{
   val negotiations: Set[Negotiation] = initializeNegotiations.map(_(onStateChanged)).toSet
 
   private val negotiationsMap = negotiations.map(n => n.id -> n).toMap
+
   def negotiation(id: NegotiationId): Negotiation = negotiationsMap(id)
+
   def eachNegotiation(f: (Negotiation => Unit)*) = negotiations.foreach(neg => f.foreach(_(neg)))
+}
