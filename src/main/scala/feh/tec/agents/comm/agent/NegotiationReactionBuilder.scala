@@ -29,6 +29,14 @@ trait NegotiationReactionBuilder {
     def unapply(msg: NegotiationMessage): Option[NegotiationState] = negotiation(msg.negotiation).get(NegotiationVar.State)
   }
 
+  object WithHigherPriority{
+    def unapply(msg: NegotiationMessage): Boolean = {
+      if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
+      msg.asInstanceOf[PrioritizedMessage].priority > negotiation(msg.negotiation)(NegotiationVar.Priority)
+    }
+
+  }
+
 //  case class &(l: MessageCondition, r: MessageCondition) extends MessageCondition{
 //    def unapply(msg: NegotiationMessage) = ???
 //  }

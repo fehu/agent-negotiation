@@ -34,7 +34,7 @@ object SystemMessage{
   protected abstract class NoContentSystemMessage(val tpe: String) extends UUIDed() with SystemMessage{
     val asString = ""
   }
-  protected  abstract class NegotiationScopeControl(doWithScope: String) extends UUIDed() with SystemMessage {
+  protected abstract class NegotiationScopeControl(doWithScope: String) extends UUIDed() with SystemMessage {
     val neg: NegotiationId
     val scope: Set[NegotiatingAgentRef]
 
@@ -51,6 +51,11 @@ object SystemMessage{
                      (implicit val sender: AgentRef) extends NegotiationScopeControl("Add")
   case class RmScope (neg: NegotiationId, scope: Set[NegotiatingAgentRef])
                      (implicit val sender: AgentRef) extends NegotiationScopeControl("Rm")
+
+  case class SetPriority(neg: NegotiationId, priority: Int)(implicit val sender: AgentRef) extends UUIDed() with SystemMessage{
+    val tpe = "SetPriority"
+    val asString = s"$neg: $priority"
+  }
 
   case class ReportStates(of: NegotiationId, toMe: Boolean)(implicit val sender: AgentRef) extends UUIDed() with SystemMessage{
     val tpe = "ReportStates"

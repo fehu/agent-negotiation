@@ -36,6 +36,6 @@ trait ReportingNegotiations extends Reporting{
     var stateChanged      = true
   }
 
-  protected def onStateChanged(change: VarUpdated[_]): Unit =
+  protected def onVarChanged(change: VarUpdated[_]): Unit =
     if(Reporting.stateChanged) reportTo ! Report.StateChanged(change)
 }

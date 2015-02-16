@@ -73,9 +73,9 @@ trait Negotiating{
   /**should be called only once*/
   protected def initializeNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
 
-  protected def onStateChanged(change: Negotiation.VarUpdated[_])
+  protected def onVarChanged(change: Negotiation.VarUpdated[_])
 
-  val negotiations: Set[Negotiation] = initializeNegotiations.map(_(onStateChanged)).toSet
+  val negotiations: Set[Negotiation] = initializeNegotiations.map(_(onVarChanged)).toSet
 
   private val negotiationsMap = negotiations.map(n => n.id -> n).toMap
 

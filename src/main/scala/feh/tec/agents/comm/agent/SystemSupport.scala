@@ -1,5 +1,6 @@
 package feh.tec.agents.comm.agent
 
+import feh.tec.agents.comm.Negotiation.VarUpdated
 import feh.tec.agents.comm._
 
 /**
@@ -38,6 +39,7 @@ trait NegotiationSystemSupport extends Negotiating with SystemSupport{
     case SystemMessage.SetScope(neg, scope) => negotiation(neg).set(NegotiationVar.Scope, scope)
     case SystemMessage.AddScope(neg, scope) => updateScope(neg, _ ++ scope)
     case SystemMessage.RmScope (neg, scope) => updateScope(neg, _ -- scope)
+    case SystemMessage.SetPriority(neg, priority) => negotiation(neg).set(NegotiationVar.Priority, priority)
   }
 
   private def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef]) =

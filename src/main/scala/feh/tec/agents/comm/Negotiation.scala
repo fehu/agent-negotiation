@@ -2,7 +2,9 @@ package feh.tec.agents.comm
 
 import feh.util._
 
-case class NegotiationId(name: String)
+case class NegotiationId(name: String){
+  override lazy val toString = s"Negotiation($name)"
+}
 
 abstract class Negotiation(val id: NegotiationId, varUpdated: Negotiation.VarUpdated[_] => Unit)
   extends Negotiation.NegotiationBase with Negotiation.VarsCreation{
@@ -36,7 +38,7 @@ object Negotiation{
     def set[T](negVar: NegotiationVar[T], value: T) = {
       val old = get(negVar)
       getNegVar(negVar).value = value
-      notifyVarUpdated(id, negVar, old, value)
+     notifyVarUpdated(id, negVar, old, value)
     }
     def transform[T](negVar: NegotiationVar[T], f: Option[T] => T) = {
       val old = get(negVar)
@@ -49,7 +51,7 @@ object Negotiation{
 
     protected def notifyVarUpdated[T](upd: Negotiation.VarUpdated[T]): Unit
 
-    protected def notifyVarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: Option[T], newValue: T): Unit =
+    private def notifyVarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: Option[T], newValue: T): Unit =
       notifyVarUpdated(Negotiation.VarUpdated(negId, negVar, oldValue, newValue))
 
     //  override def equals(obj: scala.Any) = PartialFunction.cond(obj){
