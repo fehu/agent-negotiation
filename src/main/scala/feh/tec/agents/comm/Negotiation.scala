@@ -11,7 +11,7 @@ abstract class Negotiation(val id: NegotiationId, varUpdated: Negotiation.VarUpd
 }
 
 object Negotiation{
-  case class VarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: T, newValue: T)
+  case class VarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: Option[T], newValue: T)
 
   trait NegotiationBase {
     neg =>
@@ -30,16 +30,16 @@ object Negotiation{
     private def getNegVarOpt[T](nv: NegotiationVar[T]) = negVars.get(nv).map(_.asInstanceOf[NegVar[T]])
     private def getNegVar[T](nv: NegotiationVar[T]) = getNegVarOpt(nv) getOrThrow NegotiationVar.NoSuchVarException(nv, this)
 
-    def get[T](negVar: NegotiationVar[T]): Option[T] = getNegVarOpt(negVar).map(_.value)
+    def get[T](negVar: NegotiationVar[T]): Option[T] = getNegVarOpt(negVar).flatMap(_.valueOpt)
     def apply[T](negVar: NegotiationVar[T]): T = getNegVar(negVar).value
 
     def set[T](negVar: NegotiationVar[T], value: T) = {
-      val old = getNegVar(negVar).value
+      val old = get(negVar)
       getNegVar(negVar).value = value
       notifyVarUpdated(id, negVar, old, value)
     }
-    def transform[T](negVar: NegotiationVar[T], f: T => T) = {
-      val old = getNegVar(negVar).value
+    def transform[T](negVar: NegotiationVar[T], f: Option[T] => T) = {
+      val old = get(negVar)
       val newVal = f(old)
       getNegVar(negVar).value = newVal
       notifyVarUpdated(id, negVar, old, newVal)
@@ -49,7 +49,7 @@ object Negotiation{
 
     protected def notifyVarUpdated[T](upd: Negotiation.VarUpdated[T]): Unit
 
-    protected def notifyVarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: T, newValue: T): Unit =
+    protected def notifyVarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: Option[T], newValue: T): Unit =
       notifyVarUpdated(Negotiation.VarUpdated(negId, negVar, oldValue, newValue))
 
     //  override def equals(obj: scala.Any) = PartialFunction.cond(obj){
@@ -59,6 +59,8 @@ object Negotiation{
 
     // create scope var
     new NegVar(NegotiationVar.Scope, None)
+    // create state var
+    new NegVar(NegotiationVar.State, Some(NegotiationState.Stopped))
   }
 
   /** Provides defineVar object for defining negotiation states */

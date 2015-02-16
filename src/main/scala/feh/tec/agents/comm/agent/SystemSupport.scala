@@ -41,7 +41,9 @@ trait NegotiationSystemSupport extends Negotiating with SystemSupport{
   }
 
   private def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef]) =
-    negotiation(of).transform(NegotiationVar.Scope, upd)
+    negotiation(of).transform(NegotiationVar.Scope,
+      (opt: Option[Set[NegotiatingAgentRef]]) => upd(opt.getOrElse(Set()))
+    )
 }
 
 trait NegotiationReportsSystemSupport extends ReportingNegotiations

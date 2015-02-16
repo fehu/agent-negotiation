@@ -9,12 +9,12 @@ trait NegotiatingAgent extends Agent with agent.Negotiating with agent.Negotiati
   final implicit val ref = NegotiatingAgentRef(id, self)
 }
 
-trait SystemAgent extends agent.AgentActor with agent.SystemMessageSending{
+trait SystemAgent extends agent.AgentActor with agent.MessageSending{
   val id: SystemAgentId
   final implicit val ref = SystemAgentRef(id, self)
 }
 
-trait UserAgent extends agent.AgentActor{
+trait UserAgent extends agent.AgentActor with agent.MessageSending {
   val id: UserAgentId
   final implicit val ref = UserAgentRef(id, self)
 }

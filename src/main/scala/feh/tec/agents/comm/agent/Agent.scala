@@ -45,16 +45,18 @@ trait MessageSending {
 
 }
 
+/*
 trait SystemMessageSending{
   agent: AgentActor =>
 
-  implicit class SendMessage(id: AgentRef){
+  implicit class SendSystemMessage(id: AgentRef){
     def !(msg: SystemMessage) = {
       id.ref ! msg
     }
   }
 
 }
+*/
 
 trait AgentState
 
