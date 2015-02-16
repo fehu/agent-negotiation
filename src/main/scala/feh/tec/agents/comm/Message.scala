@@ -1,5 +1,7 @@
 package feh.tec.agents.comm
 
+import java.util.UUID
+
 import feh.util.{UUIDed, HasUUID}
 
 trait Message extends HasUUID with Equals{
@@ -24,6 +26,11 @@ trait NegotiationMessage extends Message{
 trait SystemMessage extends Message
 
 object SystemMessage{
+  case class Initialize(init: SystemMessage*)(implicit val sender: AgentRef) extends UUIDed() with SystemMessage{
+    val tpe = "Initialize"
+    val asString = init.mkString(", ")
+  }
+
   protected abstract class NoContentSystemMessage(val tpe: String) extends UUIDed() with SystemMessage{
     val asString = ""
   }

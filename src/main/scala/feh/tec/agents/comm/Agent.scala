@@ -2,14 +2,14 @@ package feh.tec.agents.comm
 
 import akka.actor.ActorRef
 
-trait Agent extends agent.AgentActor with agent.Reporting with agent.ReportingSystemSupport
+trait Agent extends agent.AgentActor with agent.MessageSending with agent.Reporting with agent.ReportingSystemSupport
 
 trait NegotiatingAgent extends Agent with agent.Negotiating with agent.NegotiationReportsSystemSupport{
   val id: NegotiatingAgentId
   final implicit val ref = NegotiatingAgentRef(id, self)
 }
 
-trait SystemAgent extends agent.AgentActor{
+trait SystemAgent extends agent.AgentActor with agent.SystemMessageSending{
   val id: SystemAgentId
   final implicit val ref = SystemAgentRef(id, self)
 }

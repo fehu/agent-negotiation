@@ -10,9 +10,9 @@ sealed trait AgentCreator[Ag <: AgentActor] { /*[+Ag <: Agent, +Role <: AgentRol
   type Id  <: AgentId
   type Ref <: AgentRef
 
-  protected val role: AgentRole
+  val role: AgentRole
   protected val creation: Id => Ag
-  protected implicit val clazz: ClassTag[Ag]
+  implicit val clazz: ClassTag[Ag]
 
   protected def props(id: Id): Props = Props(creation(id))
 
@@ -49,8 +49,8 @@ object AgentCreator{
 }
 
 final class NegotiatingAgentCreator[Ag <: NegotiatingAgent](
-                                      protected val role: NegotiationRole,
-                                      protected implicit val clazz: ClassTag[Ag],
+                                      val role: NegotiationRole,
+                                      implicit val clazz: ClassTag[Ag],
                                       protected val creation: NegotiatingAgentId => Ag) extends AgentCreator[Ag]{
   type Id  = NegotiatingAgentId
   type Ref = NegotiatingAgentRef
@@ -60,8 +60,8 @@ final class NegotiatingAgentCreator[Ag <: NegotiatingAgent](
 }
 
 final class SystemAgentCreator[Ag <: SystemAgent](
-                                protected val role: SystemAgentRole,
-                                protected implicit val clazz: ClassTag[Ag],
+                                val role: SystemAgentRole,
+                                implicit val clazz: ClassTag[Ag],
                                 protected val creation: SystemAgentId => Ag) extends AgentCreator[Ag]{
   type Id  = SystemAgentId
   type Ref = SystemAgentRef
@@ -71,8 +71,8 @@ final class SystemAgentCreator[Ag <: SystemAgent](
 }
 
 final class UserAgentCreator[Ag <: UserAgent](
-                              protected val role: UserAgentRole,
-                              protected implicit val clazz: ClassTag[Ag],
+                              val role: UserAgentRole,
+                              implicit val clazz: ClassTag[Ag],
                               protected val creation: UserAgentId => Ag) extends AgentCreator[Ag]{
   type Id = UserAgentId
   type Ref = UserAgentRef

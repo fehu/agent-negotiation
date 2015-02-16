@@ -3,7 +3,7 @@ package feh.tec.agents.comm.agent
 import feh.tec.agents.comm.Negotiation.VarUpdated
 import feh.tec.agents.comm._
 
-trait Reporting{
+trait Reporting extends MessageSending{
   agent: AgentActor =>
 
   val Reporting = new {

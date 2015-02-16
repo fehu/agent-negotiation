@@ -10,12 +10,7 @@ trait AgentActor extends Actor{
   def systemMessageReceived: PartialFunction[SystemMessage, Unit]
   def messageReceived: PartialFunction[Message, Unit]
 
-  implicit class SendMessage(id: AgentRef){
-    def !(msg: Message) = {
-      onMessageSent(msg, id)
-      id.ref ! msg
-    }
-  }
+  protected var state: AgentState = AgentState.NotInitialized
 
   def receive: Receive = {
     case sys: SystemMessage =>
@@ -25,23 +20,56 @@ trait AgentActor extends Actor{
       messageReceived(msg)
     case msg: Message =>
       onMessageReceived(msg, unhandled = true)
-    case notAMessage => // ignore it
+    case _ => // ignore it
   }
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean)
-  protected def onMessageSent(msg: Message, to: AgentRef)
 
-  protected def unknownSystemMessage(sys: SystemMessage)
+  protected def unknownSystemMessage(sysMsg: SystemMessage)
 
   def start()
   def stop()
+}
+
+trait MessageSending {
+  agent: AgentActor =>
+
+  protected def onMessageSent(msg: Message, to: AgentRef)
+
+  implicit class SendMessage(id: AgentRef){
+    def !(msg: Message) = {
+      onMessageSent(msg, id)
+      id.ref ! msg
+    }
+  }
+
+}
+
+trait SystemMessageSending{
+  agent: AgentActor =>
+
+  implicit class SendMessage(id: AgentRef){
+    def !(msg: SystemMessage) = {
+      id.ref ! msg
+    }
+  }
+
+}
+
+trait AgentState
+
+object AgentState{
+  case object NotInitialized extends AgentState
+  case object Initializing extends AgentState
+  case object Initialized extends AgentState
+  case object Stopped extends AgentState
 }
 
 trait Negotiating{
   agent: AgentActor =>
 
   /**should be called only once*/
-  protected def /*val*/ initializeNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
+  protected def initializeNegotiations: Seq[(Negotiation.VarUpdated[_] => Unit) => Negotiation]
 
   protected def onStateChanged(change: Negotiation.VarUpdated[_])
 

@@ -79,9 +79,6 @@ abstract class NegotiationVar[T] extends Product
 trait NegotiationState
 
 object NegotiationState{
-  case object NotInitialized extends NegotiationState
-  case object Initializing extends NegotiationState
-  case object Initialized extends NegotiationState
   case object Negotiating extends NegotiationState
   case object Stopped extends NegotiationState
 }

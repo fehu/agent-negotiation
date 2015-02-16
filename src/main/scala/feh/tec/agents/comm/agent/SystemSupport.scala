@@ -15,6 +15,10 @@ trait SystemSupport {
     case fraud if !fraud.sender.id.isInstanceOf[SystemAgentId] => systemMessageFraud(fraud)
     case _: SystemMessage.Start => start()
     case _: SystemMessage.Stop  => stop()
+    case SystemMessage.Initialize(init@ _*) if state == AgentState.NotInitialized =>
+      state = AgentState.Initializing
+      init.foreach(systemMessageReceived)
+      state = AgentState.Initialized
   }
 
 }
