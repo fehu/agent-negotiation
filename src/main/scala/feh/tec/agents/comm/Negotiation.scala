@@ -2,6 +2,8 @@ package feh.tec.agents.comm
 
 import feh.util._
 
+import scala.collection.immutable
+
 case class NegotiationId(name: String){
   override lazy val toString = s"Negotiation($name)"
 }
@@ -29,6 +31,10 @@ object Negotiation{
       def value_=(t: T) = valueOpt = Some(t)
     }
 
+    def issues = negVars.keySet.toSeq.collect{
+      case NegotiationVar.Issue(nVar) => nVar
+    }
+
     private def getNegVarOpt[T](nv: NegotiationVar[T]) = negVars.get(nv).map(_.asInstanceOf[NegVar[T]])
     private def getNegVar[T](nv: NegotiationVar[T]) = getNegVarOpt(nv) getOrThrow NegotiationVar.NoSuchVarException(nv, this)
 
@@ -40,7 +46,7 @@ object Negotiation{
       getNegVar(negVar).value = value
      notifyVarUpdated(id, negVar, old, value)
     }
-    def transform[T](negVar: NegotiationVar[T], f: Option[T] => T) = {
+    def transform[T](negVar: NegotiationVar[T])(f: Option[T] => T) = {
       val old = get(negVar)
       val newVal = f(old)
       getNegVar(negVar).value = newVal
@@ -73,7 +79,12 @@ object Negotiation{
       def apply[T](id: NegotiationVar[T]) = new NegVar[T](id, None)
 
       def priority = apply(NegotiationVar.Priority)
-      def forIssue[T](issue: Var[T]) = apply(NegotiationVar.Issue(issue))
+
+      def forIssue[T](v: Var[T], domain: Traversable[T]) = {
+        apply(NegotiationVar.Issue(v))
+        apply(NegotiationVar.IssueDomain(v))
+        set(NegotiationVar.IssueDomain(v), domain.toIndexedSeq)
+      }
     }
   }
 }
@@ -97,7 +108,12 @@ object NegotiationVar{
   case object Scope extends NegotiationVar[Set[NegotiatingAgentRef]]
   case object State extends NegotiationVar[NegotiationState]
   case object Priority extends NegotiationVar[Int]
+
   case class Issue[T](issue: Var[T]) extends NegotiationVar[T]
+  case class IssueDomain[T](issue: Var[T]) extends NegotiationVar[immutable.Traversable[T]]
+
+  case object CurrentIssues extends NegotiationVar[Seq[Var[_]]]
+  case object DomainIterator extends NegotiationVar[Iterator[Seq[Any]]]
 }
 
-case class Var[T](name: String)
+case class Var[+T](name: String)
