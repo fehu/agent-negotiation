@@ -23,6 +23,10 @@ trait NegotiationMessage extends Message{
   override def toString = s"$tpe($negotiation: $asString) by $sender"
 }
 
+trait NegotiationResponse extends NegotiationMessage{
+  val respondingTo: UUID
+}
+
 trait SystemMessage extends Message
 
 object SystemMessage{

@@ -1,5 +1,6 @@
 package feh.tec.agents.comm
 
+import java.util.UUID
 import feh.util._
 import scala.collection.immutable
 import scala.language.existentials
@@ -113,7 +114,9 @@ object NegotiationVar{
   case class IssueDomain[T](issue: Var[T]) extends NegotiationVar[immutable.Traversable[T]]
 
   case object CurrentIssues extends NegotiationVar[Seq[Var[_]]]
-  case object DomainIterator extends NegotiationVar[Iterator[Map[Var[Any], Any]]] /*Iterator[Map[Var[T], T]] forSome {type T}*/
+  case object DomainIterator extends NegotiationVar[Iterator[Map[Var[Any], Any]]]
+
+  case object AwaitingResponse extends NegotiationVar[Option[UUID]]
 }
 
 case class Var[+T](name: String)
