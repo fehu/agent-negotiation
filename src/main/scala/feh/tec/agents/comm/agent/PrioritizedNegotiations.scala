@@ -46,7 +46,7 @@ trait PrioritizedIssueNegotiations{
 
 trait PrioritizedProposalBasedNegotiation{
   case class Proposal(negotiation: NegotiationId,
-                      values: Map[Var[_], Any],
+                      values: Map[Var[Any], Any],
                       priority: Int,
                       uuid: UUID = UUID.randomUUID())
                      (implicit val sender: AgentRef)
@@ -56,12 +56,11 @@ trait PrioritizedProposalBasedNegotiation{
     val asString = values.mkString(", ")
   }
 
-  trait Response extends PrioritizedMessage{
-    val respondingTo: UUID
-  }
+  trait Response extends PrioritizedMessage with NegotiationResponse
   
   case class Acceptance(negotiation: NegotiationId,
                         respondingTo: UUID,
+                        myValues: Map[Var[Any], Any],
                         priority: Int,
                         uuid: UUID = UUID.randomUUID())
                        (implicit val sender: AgentRef)
@@ -73,6 +72,7 @@ trait PrioritizedProposalBasedNegotiation{
   
   case class Rejection(negotiation: NegotiationId,
                        respondingTo: UUID,
+                       myValues: Map[Var[Any], Any],
                        priority: Int,
                        uuid: UUID = UUID.randomUUID())
                       (implicit val sender: AgentRef)
@@ -84,6 +84,8 @@ trait PrioritizedProposalBasedNegotiation{
 }
 
 object PrioritizedNegotiations extends PrioritizedIssueNegotiations with PrioritizedProposalBasedNegotiation
+
+
 
 
 
@@ -134,3 +136,16 @@ trait RegisteringPriorities extends NegotiatingAgent{
 
   def topPriorityIsKnown() = {}
 }
+
+
+
+
+
+
+trait PrioritizedNegotiationsFallback extends PrioritizedProposalBasedNegotiation{
+  case object FallbackState extends NegotiationState
+
+  ??? // todo
+}
+
+object PrioritizedNegotiationsFallback extends PrioritizedIssueNegotiations with PrioritizedNegotiationsFallback
