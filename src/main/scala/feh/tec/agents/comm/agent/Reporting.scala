@@ -6,15 +6,17 @@ import feh.tec.agents.comm._
 trait Reporting extends MessageSending{
   agent: AgentActor =>
 
-  val Reporting = new {
-    var messageSent       = false
-    var messageReceived   = false
-    var messageUnhandled  = true
+  class ReportingConfig(var messageSent: Boolean = false,
+                        var messageReceived: Boolean = false,
+                        var messageUnhandled: Boolean = true)
+  {
+    override def toString =
+      s"messageSent: $messageSent, messageReceived: $messageReceived, messageUnhandled: $messageUnhandled"
   }
 
-  val reportTo: SystemAgentRef
+  val Reporting: ReportingConfig
 
-//  def report(msg: Report) = reportTo.ref ! msg
+  val reportTo: SystemAgentRef
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean): Unit =
     if(unhandled)
@@ -29,12 +31,16 @@ trait Reporting extends MessageSending{
 trait ReportingNegotiations extends Reporting{
   agent: AgentActor with Negotiating =>
 
-  override val Reporting = new {
-    var messageSent       = false
-    var messageReceived   = false
-    var messageUnhandled  = true
-    var stateChanged      = true
+  class ReportingNegotiationsConfig(messageSent: Boolean = false,
+                                    messageReceived: Boolean = false,
+                                    messageUnhandled: Boolean = true,
+                                    var stateChanged: Boolean = true
+                                     ) extends ReportingConfig(messageSent, messageReceived, messageUnhandled)
+  {
+    override def toString = super.toString + s", stateChanged: $stateChanged"
   }
+
+  override val Reporting: ReportingNegotiationsConfig
 
   protected def onVarChanged(change: VarUpdated[_]): Unit =
     if(Reporting.stateChanged) reportTo ! Report.StateChanged(change)
