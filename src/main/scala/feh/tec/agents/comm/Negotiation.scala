@@ -1,8 +1,8 @@
 package feh.tec.agents.comm
 
 import feh.util._
-
 import scala.collection.immutable
+import scala.language.existentials
 
 case class NegotiationId(name: String){
   override lazy val toString = s"Negotiation($name)"
@@ -113,7 +113,7 @@ object NegotiationVar{
   case class IssueDomain[T](issue: Var[T]) extends NegotiationVar[immutable.Traversable[T]]
 
   case object CurrentIssues extends NegotiationVar[Seq[Var[_]]]
-  case object DomainIterator extends NegotiationVar[Iterator[Seq[Any]]]
+  case object DomainIterator extends NegotiationVar[Iterator[Map[Var[Any], Any]]] /*Iterator[Map[Var[T], T]] forSome {type T}*/
 }
 
 case class Var[+T](name: String)
