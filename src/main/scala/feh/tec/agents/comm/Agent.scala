@@ -6,17 +6,17 @@ trait Agent extends agent.AgentActor with agent.MessageSending with agent.Report
 
 trait NegotiatingAgent extends Agent with agent.Negotiating with agent.NegotiationReportsSystemSupport{
   val id: NegotiatingAgentId
-  final implicit val ref = NegotiatingAgentRef(id, self)
+  final implicit lazy val ref = NegotiatingAgentRef(id, self)
 }
 
 trait SystemAgent extends agent.AgentActor with agent.MessageSending{
   val id: SystemAgentId
-  final implicit val ref = SystemAgentRef(id, self)
+  final implicit lazy val ref = SystemAgentRef(id, self)
 }
 
 trait UserAgent extends agent.AgentActor with agent.MessageSending {
   val id: UserAgentId
-  final implicit val ref = UserAgentRef(id, self)
+  final implicit lazy val ref = UserAgentRef(id, self)
 }
 
 
