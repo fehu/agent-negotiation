@@ -34,10 +34,24 @@ trait NegotiationReactionBuilder {
       if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
       msg.asInstanceOf[PrioritizedMessage].priority > negotiation(msg.negotiation)(NegotiationVar.Priority)
     }
-
   }
 
-//  case class &(l: MessageCondition, r: MessageCondition) extends MessageCondition{
+  object WithLowerPriority{
+    def unapply(msg: NegotiationMessage): Boolean = {
+      if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
+      msg.asInstanceOf[PrioritizedMessage].priority < negotiation(msg.negotiation)(NegotiationVar.Priority)
+    }
+  }
+
+  object AwaitingResponse{
+    def unapply(msg: NegotiationMessage): Boolean = {
+      if(!msg.isInstanceOf[NegotiationResponse]) sys.error(s"$msg isn't response")
+      negotiation(msg.negotiation)(NegotiationVar.AwaitingResponse)
+        .contains(msg.asInstanceOf[NegotiationResponse].respondingTo)
+    }
+  }
+
+  //  case class &(l: MessageCondition, r: MessageCondition) extends MessageCondition{
 //    def unapply(msg: NegotiationMessage) = ???
 //  }
 
