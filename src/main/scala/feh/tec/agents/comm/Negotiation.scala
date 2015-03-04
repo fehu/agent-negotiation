@@ -96,6 +96,7 @@ trait NegotiationState
 
 object NegotiationState{
   case object Negotiating extends NegotiationState
+  case object Waiting extends NegotiationState
   case object Stopped extends NegotiationState
 }
 
@@ -116,7 +117,9 @@ object NegotiationVar{
   case object CurrentIssues extends NegotiationVar[Seq[Var[_]]]
   case object DomainIterator extends NegotiationVar[Iterator[Map[Var[Any], Any]]]
 
+  case object CurrentProposal extends NegotiationVar[NegotiationMessage]
   case object AwaitingResponse extends NegotiationVar[Option[UUID]]
+  case object ProposalAcceptance extends NegotiationVar[Map[NegotiatingAgentRef, Boolean]]
 }
 
 case class Var[+T](name: String)

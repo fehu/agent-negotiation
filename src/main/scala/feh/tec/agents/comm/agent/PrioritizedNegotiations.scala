@@ -24,7 +24,7 @@ trait PrioritizedIssueNegotiations{
                           issues: Seq[Var[_]],
                           priority: Int,
                           uuid: UUID = UUID.randomUUID())
-                         (implicit val sender: AgentRef)
+                         (implicit val sender: NegotiatingAgentRef)
     extends PrioritizedMessage
   {
     val tpe = s"IssueRequest[$action]"
@@ -36,7 +36,7 @@ trait PrioritizedIssueNegotiations{
                          issues: Seq[Var[_]],
                          priority: Int,
                          uuid: UUID = UUID.randomUUID())
-                        (implicit val sender: AgentRef)
+                        (implicit val sender: NegotiatingAgentRef)
     extends PrioritizedMessage
   {
     val tpe = s"IssueDemand[$action]"
@@ -49,7 +49,7 @@ trait PrioritizedProposalBasedNegotiation{
                       values: Map[Var[Any], Any],
                       priority: Int,
                       uuid: UUID = UUID.randomUUID())
-                     (implicit val sender: AgentRef)
+                     (implicit val sender: NegotiatingAgentRef)
     extends PrioritizedMessage
   {
     val tpe = "Proposal"
@@ -63,7 +63,7 @@ trait PrioritizedProposalBasedNegotiation{
                         myValues: Map[Var[Any], Any],
                         priority: Int,
                         uuid: UUID = UUID.randomUUID())
-                       (implicit val sender: AgentRef)
+                       (implicit val sender: NegotiatingAgentRef)
     extends Response
   {
     val asString = "Acceptance"
@@ -75,7 +75,7 @@ trait PrioritizedProposalBasedNegotiation{
                        myValues: Map[Var[Any], Any],
                        priority: Int,
                        uuid: UUID = UUID.randomUUID())
-                      (implicit val sender: AgentRef)
+                      (implicit val sender: NegotiatingAgentRef)
     extends Response
   {
     val asString = "Rejection"
@@ -91,6 +91,7 @@ object PrioritizedNegotiations extends PrioritizedIssueNegotiations with Priorit
 
 
 /** Priorities Registering for [[NegotiatingAgent]]s
+ * TODO: Use NegotiationVar
  */
 trait RegisteringPriorities extends NegotiatingAgent{
   private var _priorityRegister = Map.empty[NegotiationId, mutable.Map[NegotiatingAgentRef, Int]]
@@ -125,7 +126,7 @@ trait RegisteringPriorities extends NegotiatingAgent{
     super.onMessageReceived(msg, unhandled)
     if(!unhandled) msg match {
       case hasPriority: PrioritizedMessage =>
-        val sender = hasPriority.sender.asInstanceOf[NegotiatingAgentRef]
+        val sender = hasPriority.sender
         val reg = priorityRegister(hasPriority.negotiation)
         if(reg.getOrElse(sender, 0) != hasPriority.priority) reg += sender -> hasPriority.priority
         val scope = negotiation(hasPriority.negotiation) apply NegotiationVar.Scope
@@ -145,7 +146,22 @@ trait RegisteringPriorities extends NegotiatingAgent{
 trait PrioritizedNegotiationsFallback extends PrioritizedProposalBasedNegotiation{
   case object FallbackState extends NegotiationState
 
-  ??? // todo
+  case class FallbackRequest(negotiation: NegotiationId,
+                             priority: Int,
+                             uuid: UUID = UUID.randomUUID())
+                            (implicit val sender: NegotiatingAgentRef) extends PrioritizedMessage{
+    val tpe = "FallbackRequest"
+    val asString = ""
+  }
+
+  case class IWillChange(negotiation: NegotiationId,
+                         respondingTo: UUID,
+                         priority: Int,
+                         uuid: UUID = UUID.randomUUID())
+                        (implicit val sender: NegotiatingAgentRef) extends NegotiationResponse{
+    val tpe = "IWillChange"
+    val asString = ""
+  }
 }
 
 object PrioritizedNegotiationsFallback extends PrioritizedIssueNegotiations with PrioritizedNegotiationsFallback

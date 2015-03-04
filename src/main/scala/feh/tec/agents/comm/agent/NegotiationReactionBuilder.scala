@@ -43,6 +43,16 @@ trait NegotiationReactionBuilder {
     }
   }
 
+  /** msg.priority - my.priority*/
+  object WithPriorityDiff{
+    def unapply(msg: NegotiationMessage): Option[Int] = {
+      if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
+      Some{
+        msg.asInstanceOf[PrioritizedMessage].priority - negotiation(msg.negotiation)(NegotiationVar.Priority)
+      }
+    }
+  }
+
   object AwaitingResponse{
     def unapply(msg: NegotiationMessage): Boolean = {
       if(!msg.isInstanceOf[NegotiationResponse]) sys.error(s"$msg isn't response")
