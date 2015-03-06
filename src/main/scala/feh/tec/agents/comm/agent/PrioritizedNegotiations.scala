@@ -122,6 +122,7 @@ trait RegisteringPriorities extends NegotiatingAgent{
     }
   }
 
+  private var topPriorityKnown = false // todo: reset
   override protected def onMessageReceived(msg: Message, unhandled: Boolean): Unit = {
     super.onMessageReceived(msg, unhandled)
     if(!unhandled) msg match {
@@ -130,7 +131,10 @@ trait RegisteringPriorities extends NegotiatingAgent{
         val reg = priorityRegister(hasPriority.negotiation)
         if(reg.getOrElse(sender, 0) != hasPriority.priority) reg += sender -> hasPriority.priority
         val scope = negotiation(hasPriority.negotiation) apply NegotiationVar.Scope
-        if(reg.size == scope.size + 1) topPriorityIsKnown()
+        if(!topPriorityKnown && reg.size == scope.size + 1) {
+          topPriorityKnown = true
+          topPriorityIsKnown()
+        }
       case _ =>
     }
   }

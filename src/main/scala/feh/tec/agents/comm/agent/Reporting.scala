@@ -19,10 +19,8 @@ trait Reporting extends MessageSending{
   val reportTo: SystemAgentRef
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean): Unit =
-    if(unhandled)
-      if(Reporting.messageUnhandled)  reportTo ! Report.MessageReceived(msg, unhandled)
-      else
-      if(Reporting.messageReceived)   reportTo ! Report.MessageReceived(msg, unhandled)
+         if(unhandled && Reporting.messageUnhandled) reportTo ! Report.MessageReceived(msg, unhandled)
+    else if(!unhandled && Reporting.messageReceived) reportTo ! Report.MessageReceived(msg, unhandled)
 
   protected def onMessageSent(msg: Message, to: AgentRef): Unit =
     if(to != reportTo && Reporting.messageSent) reportTo ! Report.MessageSent(msg, to)
