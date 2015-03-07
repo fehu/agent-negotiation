@@ -114,7 +114,7 @@ trait RegisteringPriorities extends NegotiatingAgent{
     }
   }
 
-  override protected def onVarChanged(change: VarUpdated[_]) = {
+  override protected def onVarChanged(change: VarUpdated[_ <: NegotiationVar]) = {
     super.onVarChanged(change)
     if(change.negVar == NegotiationVar.Priority) {
       val reg = priorityRegister(change.negId)

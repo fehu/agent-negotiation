@@ -9,27 +9,27 @@ case class NegotiationId(name: String){
   override lazy val toString = s"Negotiation($name)"
 }
 
-abstract class Negotiation(val id: NegotiationId, varUpdated: Negotiation.VarUpdated[_] => Unit)
+abstract class Negotiation(val id: NegotiationId, varUpdated: Negotiation.VarUpdated[_ <: NegotiationVar] => Unit)
   extends Negotiation.NegotiationBase with Negotiation.VarsCreation{
 
-  protected def notifyVarUpdated[T](upd: Negotiation.VarUpdated[T]) = varUpdated(upd)
+  protected def notifyVarUpdated[V <: NegotiationVar](upd: Negotiation.VarUpdated[V]) = varUpdated(upd)
 }
 
 object Negotiation{
-  case class VarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: Option[T], newValue: T)
+  case class VarUpdated[V <: NegotiationVar](negId: NegotiationId, negVar: V, oldValue: Option[V#T], newValue: V#T)
 
   trait NegotiationBase {
     neg =>
 
     val id: NegotiationId
 
-    private var negVars: Map[NegotiationVar[_], NegVar[_]] = Map()
+    private var negVars: Map[NegotiationVar, NegVar[_]] = Map()
 
-    protected class NegVar[T](id: NegotiationVar[T], var valueOpt: Option[T]){
+    protected class NegVar[V <: NegotiationVar](id: V)(var valueOpt: Option[V#T]){
       negVars += id -> this
 
       def value = valueOpt getOrThrow NegotiationVar.UndefinedException(id, neg)
-      def value_=(t: T) = valueOpt = Some(t)
+      def value_=(t: V#T) = valueOpt = Some(t)
     }
 
     def issues = negVars.keySet.toSeq.collect{
@@ -38,36 +38,41 @@ object Negotiation{
 
     def issueValues = issues.zipMap(iss => apply(NegotiationVar.Issue(iss))).toMap
 
-    private def getNegVarOpt[T](nv: NegotiationVar[T])(implicit default: NegotiationVarDefault[T] = null) =
-      negVars.get(nv).map(_.asInstanceOf[NegVar[T]]).orElse(Option(default).map(opt => new NegVar(nv, opt.default)))
-    private def getNegVar[T](nv: NegotiationVar[T])(implicit default: NegotiationVarDefault[T] = null) = 
+    def addNegVarDefaults(p: (NegotiationVar, Option[Any])*) = negVarDefaults ++= p
+    private var negVarDefaults: Map[NegotiationVar, Option[Any]] = Map()
+
+    private def getNegVarOpt[V <: NegotiationVar](nv: V) =
+      negVars.get(nv).map(_.asInstanceOf[NegVar[V]]).orElse(negVarDefaults.get(nv)
+        .map(opt => new NegVar(nv)(opt.asInstanceOf[Option[V#T]])))
+    private def getNegVar[V <: NegotiationVar](nv: V) =
       getNegVarOpt(nv) getOrThrow NegotiationVar.NoSuchVarException(nv, this)
 
-    def get[T](negVar: NegotiationVar[T])(implicit default: NegotiationVarDefault[T] = null): Option[T] = 
+    def get[V <: NegotiationVar](negVar: V): Option[V#T] =
       getNegVarOpt(negVar).flatMap(_.valueOpt)
-    def apply[T](negVar: NegotiationVar[T])(implicit default: NegotiationVarDefault[T] = null): T = getNegVar(negVar).value
+    def apply[V <: NegotiationVar](negVar: V): V#T = getNegVar(negVar).value
 
-    def set[T](negVar: NegotiationVar[T], value: T)(implicit default: NegotiationVarDefault[T] = null) = {
+    def set[V <: NegotiationVar](negVar: V)(value: V#T) = {
       val old = get(negVar)
       getNegVar(negVar).value = value
      notifyVarUpdated(id, negVar, old, value)
     }
+    def update[V <: NegotiationVar](negVar: V, value: V#T) = set(negVar)(value)
 
-    def transformOpt[T](negVar: NegotiationVar[T])(f: Option[T] => T) = {
+    def transformOpt[V <: NegotiationVar](negVar: V)(f: Option[V#T] => V#T) = {
       val old = get(negVar)
       val newVal = f(old)
       getNegVar(negVar).value = newVal
       notifyVarUpdated(id, negVar, old, newVal)
     }
-    def transform[T](negVar: NegotiationVar[T])(f: T => T)(implicit default: NegotiationVarDefault[T] = null) =
+    def transform[V <: NegotiationVar](negVar: V)(f: V#T => V#T) =
       transformOpt(negVar)(_.get |> f)
 
-    def report: Map[NegotiationVar[_], Any] = negVars.mapValues(_.valueOpt.orNull)
+    def report: Map[NegotiationVar, Any] = negVars.mapValues(_.valueOpt.orNull)
 
-    protected def notifyVarUpdated[T](upd: Negotiation.VarUpdated[T]): Unit
+    protected def notifyVarUpdated[V <: NegotiationVar](upd: Negotiation.VarUpdated[V]): Unit
 
-    private def notifyVarUpdated[T](negId: NegotiationId, negVar: NegotiationVar[T], oldValue: Option[T], newValue: T): Unit =
-      notifyVarUpdated(Negotiation.VarUpdated(negId, negVar, oldValue, newValue))
+    private def notifyVarUpdated[V <: NegotiationVar](negId: NegotiationId, negVar: V, oldValue: Option[V#T], newValue: V#T): Unit =
+      notifyVarUpdated(Negotiation.VarUpdated[V](negId, negVar, oldValue, newValue))
 
     //  override def equals(obj: scala.Any) = PartialFunction.cond(obj){
     //    case that: Negotiation => that.id == this.id
@@ -75,9 +80,9 @@ object Negotiation{
     override def toString = s"Negotiation(${id.name})"
 
     // create scope var
-    new NegVar(NegotiationVar.Scope, None)
+    new NegVar(NegotiationVar.Scope)(None)
     // create state var
-    new NegVar(NegotiationVar.State, Some(NegotiationState.Stopped))
+    new NegVar(NegotiationVar.State)(Some(NegotiationState.Stopped))
   }
 
   /** Provides defineVar object for defining negotiation states */
@@ -85,21 +90,21 @@ object Negotiation{
     self: NegotiationBase =>
 
     object defineVar{
-      def apply[T](id: NegotiationVar[T]) = new NegVar[T](id, None)
+      def apply[V <: NegotiationVar](id: V) = new NegVar[V](id)(None)
 
       def priority = apply(NegotiationVar.Priority)
 
       def forIssue[T](v: Var[T], domain: Traversable[T]) = {
         apply(NegotiationVar.Issue(v))
         apply(NegotiationVar.IssueDomain(v))
-        set(NegotiationVar.IssueDomain(v), domain.toIndexedSeq)
+        set(NegotiationVar.IssueDomain(v))(domain.toIndexedSeq)
       }
     }
   }
 }
 
-abstract class NegotiationVar[+T] extends Product
-abstract class NegotiationVarDefault[+T](val default: Option[T]) extends NegotiationVar[T]
+abstract class NegotiationVar { type T }
+abstract class NegotiationVarDefault[V <: NegotiationVar](val default: Option[V#T]) extends NegotiationVar {type T = V#T}
 
 trait NegotiationState
 
@@ -110,38 +115,25 @@ object NegotiationState{
 }
 
 object NegotiationVar{
-  case class NoSuchVarException(negVar: NegotiationVar[_], negotiation: Negotiation.NegotiationBase)
+  case class NoSuchVarException(negVar: NegotiationVar, negotiation: Negotiation.NegotiationBase)
     extends Exception(s"$negotiation has no var $negVar")
 
-  case class UndefinedException(negVar: NegotiationVar[_], negotiation: Negotiation.NegotiationBase)
+  case class UndefinedException(negVar: NegotiationVar, negotiation: Negotiation.NegotiationBase)
     extends Exception(s"$negVar is undefined in $negotiation")
 
-  case object Scope extends NegotiationVar[Set[NegotiatingAgentRef]]
-  case object State extends NegotiationVar[NegotiationState]
-  case object Priority extends NegotiationVar[Int]
+  case object Scope extends NegotiationVar{ type T = Set[NegotiatingAgentRef]}
+  case object State extends NegotiationVar{ type T = NegotiationState}
+  case object Priority extends NegotiationVar{ type T = Int}
 
-  case class Issue[T](issue: Var[T]) extends NegotiationVar[T]
-  case class IssueDomain[T](issue: Var[T]) extends NegotiationVar[immutable.Traversable[T]]
+  case class Issue[I](issue: Var[I]) extends NegotiationVar{ type T = I}
+  case class IssueDomain[I](issue: Var[I]) extends NegotiationVar{ type T = immutable.Traversable[I]}
 
-  case object CurrentIssues extends NegotiationVar[Seq[Var[_]]]
-  case object DomainIterator extends NegotiationVar[Iterator[Map[Var[Any], Any]]]
+  case object CurrentIssues extends NegotiationVar{ type T = Seq[Var[_]]}
+  case object DomainIterator extends NegotiationVar{ type T = Iterator[Map[Var[Any], Any]]}
 
-  case object CurrentProposal extends NegotiationVar[NegotiationMessage]
-  case object AwaitingResponse extends NegotiationVar[Option[UUID]]
-  case object ProposalAcceptance extends NegotiationVar[Map[NegotiatingAgentRef, Boolean]]
-
-  object Default{
-//    implicit case object DomainIterator extends NegotiationVarDefault[Iterator[Map[Var[Any], Any]]]
-    implicit case object CurrentIssues extends NegotiationVarDefault[Seq[Var[_]]](Some(Nil))
-    implicit case object AwaitingResponse extends NegotiationVarDefault[Option[UUID]](None)
-    implicit case object ProposalAcceptance extends NegotiationVarDefault[Map[NegotiatingAgentRef, Boolean]](Some(Map()))
-
-    object Stubs{
-//      case object State extends NegotiationVar[NegotiationState]
-    implicit case object DomainIterator extends NegotiationVarDefault[Iterator[Map[Var[Any], Any]]](None)
-    implicit case object CurrentProposal extends NegotiationVarDefault[NegotiationMessage](None)
-    }
-  }
+  case object CurrentProposal extends NegotiationVar{ type T = NegotiationMessage}
+  case object AwaitingResponse extends NegotiationVar{ type T = Option[UUID]}
+  case object ProposalAcceptance extends NegotiationVar{ type T = Map[NegotiatingAgentRef, Boolean]}
 }
 
 case class Var[+T](name: String)

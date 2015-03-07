@@ -36,10 +36,10 @@ trait NegotiationSystemSupport extends Negotiating with SystemSupport{
   agent: AgentActor =>
 
   override def systemMessageReceived = super.systemMessageReceived orElse{
-    case SystemMessage.SetScope(neg, scope) => negotiation(neg).set(NegotiationVar.Scope, scope)
+    case SystemMessage.SetScope(neg, scope) => negotiation(neg).set(NegotiationVar.Scope)(scope)
     case SystemMessage.AddScope(neg, scope) => updateScope(neg, _ ++ scope)
     case SystemMessage.RmScope (neg, scope) => updateScope(neg, _ -- scope)
-    case SystemMessage.SetPriority(neg, priority) => negotiation(neg).set(NegotiationVar.Priority, priority)
+    case SystemMessage.SetPriority(neg, priority) => negotiation(neg).set(NegotiationVar.Priority)(priority)
   }
 
   private def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef]) =

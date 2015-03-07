@@ -40,6 +40,6 @@ trait ReportingNegotiations extends Reporting{
 
   override val Reporting: ReportingNegotiationsConfig
 
-  protected def onVarChanged(change: VarUpdated[_]): Unit =
+  protected def onVarChanged(change: VarUpdated[_ <: NegotiationVar]): Unit =
     if(Reporting.stateChanged) reportTo ! Report.StateChanged(change)
 }

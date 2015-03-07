@@ -49,14 +49,14 @@ object Report{
     def isSevere = false
   }
 
-  case class StatesReport(negotiation: NegotiationId, states: Map[NegotiationVar[_], Any])
+  case class StatesReport(negotiation: NegotiationId, states: Map[NegotiationVar, Any])
                          (implicit val sender: AgentRef) extends Report{
     val tpe = "StatesReport"
     val asString = negotiation.toString + " -- " + states.map{ case (k, v) => s"$k: $v" }.mkString(", ")
     def isSevere = false
   }
 
-  case class StateChanged(change: Negotiation.VarUpdated[_])(implicit val sender: AgentRef) extends Report{
+  case class StateChanged(change: Negotiation.VarUpdated[_ <: NegotiationVar])(implicit val sender: AgentRef) extends Report{
     val tpe = "StateChanged"
     val asString = change.toString
     def isSevere = false

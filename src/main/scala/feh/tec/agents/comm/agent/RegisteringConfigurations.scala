@@ -15,6 +15,6 @@ object RegisteringConfigurations {
   class PartialNegSpaceConfiguration(var configurations: Map[Int /*Priority*/, Map[Var[Any], Any]])
   case class NegSpaceConfiguration(      configurations: Map[Int /*Priority*/, Map[Var[Any], Any]])
 
-  case object FailedConfigurations extends NegotiationVar[Set[NegSpaceConfiguration]]
-  case object CurrentConfigurations extends NegotiationVar[PartialNegSpaceConfiguration]
+  case object FailedConfigurations extends NegotiationVar{type T = Set[NegSpaceConfiguration]}
+  case object CurrentConfigurations extends NegotiationVar{type T = PartialNegSpaceConfiguration }
 }
