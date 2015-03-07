@@ -1,14 +1,23 @@
 package feh.tec.agents.comm
 
-import akka.actor.{ActorLogging, ActorRef}
+import java.io.File
+import akka.util.Timeout
+import feh.util.file._
+import akka.actor.SupervisorStrategy.{Escalate, Resume}
+import akka.actor.ActorDSL._
+import akka.actor._
+import akka.pattern.ask
 import feh.tec.agents.comm.agent.SystemSupport
-import feh.util.UUIDed
+import feh.util._
+import scala.collection.mutable
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 trait ReportListener extends SystemAgent with SystemSupport{
-  def log(entry: String, warn: Boolean)
+  def log(msg: Report)
 
   def messageReceived: PartialFunction[Message, Unit] = {
-    case report: Report => log(report.toString, report.isSevere)
+    case report: Report => log(report)
   }
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean): Unit = {}
@@ -24,7 +33,7 @@ trait ReportForwarder extends ReportListener{
   override def messageReceived: PartialFunction[Message, Unit] = {
     case report: Report =>
       forwardReport.lift(report).foreach(_.foreach(_ ! report))
-      log(report.toString, report.isSevere)
+      log(report)
   }
 }
 
@@ -78,7 +87,10 @@ object Report{
 class ReportStdPrinter(val id: SystemAgentId) extends ReportListener{
   val logger = akka.event.Logging(context.system, this)
 
-  def log(entry: String, warn: Boolean): Unit = if(warn) logger.warning(entry) else logger.info(entry)
+  def log(report: Report): Unit = {
+    val s = report.toString
+    if(report.isSevere) logger.warning(s) else logger.info(s)
+  }
 
   def start(): Unit = {}
   def stop(): Unit = {}
@@ -90,10 +102,52 @@ object ReportStdPrinter{
 }
 
 // TODO
-class ReportDistributedPrinter(val id: SystemAgentId) extends ReportListener{
-  def log(entry: String, warn: Boolean): Unit = ???
+class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path) extends ReportListener{
+  logDir.file $$ {
+    f => if(!f.exists) f.mkdirs()
+  }
 
-  def start(): Unit = ???
-  def stop(): Unit = ???
+  def log(report: Report): Unit = writerFor(report.by) ! report
+
+  protected def logFile(id: AgentId): File = (logDir / (id.name + ".log")).file
+  private val writers = mutable.Map.empty[AgentId, ActorRef]
+  protected def writerFor(ag: AgentRef): ActorRef = {
+    writers.getOrElseUpdate(ag.id,
+      actor(new Act {
+        val file = logFile(ag.id)
+        if(file.exists()) file.delete()
+        file.createNewFile()
+
+        val writer = new java.io.FileWriter(file)
+
+        become{
+          case rep: Report =>
+            writer.write(rep.toString + "\n")
+            writer.flush()
+          case SystemMessage.Stop => writer.close(); sender() ! 0
+        }
+      })
+    )
+  }
+
+  def start(): Unit = {}
+  def stop(): Unit = writers.foreach{
+    case (_id, _ref) =>
+      implicit val timeout = Timeout(200 millis)
+      implicit def cont = context.system.dispatcher
+      _ref ? SystemMessage.Stop onSuccess{case 0 => writers -= _id}
+  }
   protected def onMessageSent(msg: Message, to: AgentRef) = {}
+
+//  override val supervisorStrategy =
+//    OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute){
+//      case k: ActorKilledException => writers remove ???
+//      case _: java.io.IOException => Resume
+//      case _: Throwable => Escalate
+//    }
+}
+
+object ReportDistributedPrinter{
+  def creator(role: String, logDir: String) =
+    AgentCreator(SystemAgentRole(role)){id => new ReportDistributedPrinter(id, logDir)}
 }
