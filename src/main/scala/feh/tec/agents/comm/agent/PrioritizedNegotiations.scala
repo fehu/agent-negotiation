@@ -9,7 +9,7 @@ import scala.collection.mutable
 trait PrioritizedMessage extends NegotiationMessage{
   val priority: Int
 
-  override def toString = s"$tpe($negotiation: $asString) by $sender with priority $priority"
+  override def toString = s"$tpe($negotiation: $asString) by ${sender.id} with priority $priority"
 }
 
 trait PrioritizedIssueNegotiations{
