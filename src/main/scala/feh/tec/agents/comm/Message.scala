@@ -13,14 +13,14 @@ trait Message extends HasUUID with Equals{
   /** Human readable */
   val asString: String
 
-  override def toString = s"$tpe($asString) by $sender"
+  override def toString = s"$tpe($asString) by ${sender.id}"
 }
 
 trait NegotiationMessage extends Message{
   val negotiation: NegotiationId
 
   override val sender: NegotiatingAgentRef
-  override def toString = s"$tpe($negotiation: $asString) by $sender"
+  override def toString = s"$tpe($negotiation: $asString) by ${sender.id}"
 }
 
 trait NegotiationResponse extends NegotiationMessage{

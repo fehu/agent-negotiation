@@ -13,7 +13,7 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-trait ReportListener extends SystemAgent with SystemSupport{
+trait ReportLogger extends SystemAgent with SystemSupport{
   def log(msg: Report)
 
   def messageReceived: PartialFunction[Message, Unit] = {
@@ -27,7 +27,7 @@ trait ReportListener extends SystemAgent with SystemSupport{
   protected def unknownSystemMessage(sysMsg: SystemMessage) = self ! Report.UnknownSystemMessage(sysMsg) 
 }
 
-trait ReportForwarder extends ReportListener{
+trait ReportForwarder extends ReportLogger{
   def forwardReport: PartialFunction[Report, Set[ActorRef]]
 
   override def messageReceived: PartialFunction[Message, Unit] = {
@@ -44,16 +44,16 @@ sealed abstract class Report extends UUIDed() with Message{
 
 object Report{
 
-  case class MessageReceived(msg: Message, unhandled: Boolean) extends Report{
+  case class MessageReceived(msg: Message, unhandled: Boolean)(implicit val sender: AgentRef) extends Report{
     val tpe = if(unhandled) "MessageUnhandled" else "MessageReceived"
     val asString = msg.toString
-    val sender = msg.sender
+    //    val sender = msg.sender
     def isSevere = false
   }
 
   case class MessageSent(msg: Message, to: AgentRef) extends Report{
     val tpe = "MessageSent"
-    val asString = s"$to : $msg"
+    val asString = s"${to.id} : $msg"
     val sender = msg.sender
     def isSevere = false
   }
@@ -84,11 +84,18 @@ object Report{
   }
 }
 
-class ReportStdPrinter(val id: SystemAgentId) extends ReportListener{
+class ReportLogFormat(format: Report => String){ def apply(rep: Report) = format(rep) }
+
+object ReportLogFormat{
+  implicit object Default extends ReportLogFormat(_.toString)
+  implicit object Pretty  extends ReportLogFormat(report => ("%-21s" format report.tpe) + report.asString)
+}
+
+class ReportStdPrinter(val id: SystemAgentId)(implicit format: ReportLogFormat) extends ReportLogger{
   val logger = akka.event.Logging(context.system, this)
 
   def log(report: Report): Unit = {
-    val s = report.toString
+    val s = format(report)
     if(report.isSevere) logger.warning(s) else logger.info(s)
   }
 
@@ -98,11 +105,12 @@ class ReportStdPrinter(val id: SystemAgentId) extends ReportListener{
 }
 
 object ReportStdPrinter{
-  def creator(role: String) = AgentCreator(SystemAgentRole(role)){id => new ReportStdPrinter(id)}
+  def creator(role: String)(implicit format: ReportLogFormat) =
+    AgentCreator(SystemAgentRole(role)){id => new ReportStdPrinter(id)}
 }
 
 // TODO
-class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path) extends ReportListener{
+class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path)(implicit format: ReportLogFormat) extends ReportLogger{
   logDir.file $$ {
     f => if(!f.exists) f.mkdirs()
   }
@@ -122,7 +130,7 @@ class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path) extends Repo
 
         become{
           case rep: Report =>
-            writer.write(rep.toString + "\n")
+            writer.write(format(rep) + "\n")
             writer.flush()
           case SystemMessage.Stop => writer.close(); sender() ! 0
         }
@@ -148,6 +156,6 @@ class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path) extends Repo
 }
 
 object ReportDistributedPrinter{
-  def creator(role: String, logDir: String) =
+  def creator(role: String, logDir: String)(implicit format: ReportLogFormat) =
     AgentCreator(SystemAgentRole(role)){id => new ReportDistributedPrinter(id, logDir)}
 }
