@@ -2,7 +2,8 @@ package feh.tec.agents.comm
 
 import java.util.UUID
 
-import akka.actor.ActorSystem
+import akka.actor.SupervisorStrategy.Stop
+import akka.actor._
 import feh.util.UUIDed
 
 trait NegotiationController extends SystemAgent{
@@ -14,10 +15,10 @@ trait NegotiationController extends SystemAgent{
 
   def initializeNegotiator(ref: NegotiatingAgentRef)
 
-  def initialNegotiators(implicit asys: ActorSystem): Seq[NegotiatingAgentRef] =
+  private def initialNegotiators(implicit actFactory: ActorRefFactory): Seq[NegotiatingAgentRef] =
     initialNegotiatorsCreators.zipWithIndex map { case (cr, i) => cr.create(nameForAgent(cr, i)) }
 
-  def start() = negotiators ++= initialNegotiators(context.system)
+  def start() = negotiators ++= initialNegotiators(context)
   def stop() = stopNegotiation()
 
   def initialize(): Unit = negotiators.foreach(initializeNegotiator)
@@ -32,5 +33,12 @@ object ControllerMessage{
   case class Begin(implicit val sender: AgentRef) extends UUIDed() with SystemMessage{
     val tpe = "Begin"
     val asString = ""
+  }
+}
+
+object NegotiationController{
+  object Supervision{
+    object StopAll extends AllForOneStrategy(loggingEnabled = true, { case ex: Exception => Stop })
+
   }
 }

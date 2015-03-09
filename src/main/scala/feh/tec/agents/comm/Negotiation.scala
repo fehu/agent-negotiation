@@ -42,8 +42,10 @@ object Negotiation{
     private var negVarDefaults: Map[NegotiationVar, Option[Any]] = Map()
 
     private def getNegVarOpt[V <: NegotiationVar](nv: V) =
-      negVars.get(nv).map(_.asInstanceOf[NegVar[V]]).orElse(negVarDefaults.get(nv)
-        .map(opt => new NegVar(nv)(opt.asInstanceOf[Option[V#T]])))
+      negVars.get(nv).map(_.asInstanceOf[NegVar[V]])
+        .orElse(negVarDefaults.get(nv).map{
+          opt => new NegVar(nv)(opt.asInstanceOf[Option[V#T]]) $$ {negVars += nv -> _}
+      })
     private def getNegVar[V <: NegotiationVar](nv: V) =
       getNegVarOpt(nv) getOrThrow NegotiationVar.NoSuchVarException(nv, this)
 

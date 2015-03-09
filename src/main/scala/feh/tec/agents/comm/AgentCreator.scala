@@ -1,6 +1,6 @@
 package feh.tec.agents.comm
 
-import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.actor.{ActorRefFactory, ActorRef, ActorSystem, Props}
 import feh.tec.agents.comm.agent.AgentActor
 import scala.reflect.ClassTag
 
@@ -19,9 +19,9 @@ sealed trait AgentCreator[Ag <: AgentActor] { /*[+Ag <: Agent, +Role <: AgentRol
   protected def id(name: UniqueName): Id
   protected def ref(id: Id, actor: ActorRef): Ref
 
-  def create(name: UniqueName)(implicit asys: ActorSystem ): Ref = {
+  def create(name: UniqueName)(implicit actFactory: ActorRefFactory): Ref = {
     val agId = id(name)
-    val actor = asys.actorOf(props(agId), name)
+    val actor = actFactory.actorOf(props(agId), name)
     ref(agId, actor)
   }
 }
