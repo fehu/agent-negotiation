@@ -36,7 +36,7 @@ object Negotiation{
       case NegotiationVar.Issue(nVar) => nVar
     }
 
-    def issueValues = issues.zipMap(iss => apply(NegotiationVar.Issue(iss))).toMap
+    def issueValues = issues.flatMap(iss => get(NegotiationVar.Issue(iss)).map(iss -> _)).toMap
 
     def addNegVarDefaults(p: (NegotiationVar, Option[Any])*) = negVarDefaults ++= p
     private var negVarDefaults: Map[NegotiationVar, Option[Any]] = Map()
