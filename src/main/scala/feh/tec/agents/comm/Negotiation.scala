@@ -1,8 +1,7 @@
 package feh.tec.agents.comm
 
-import java.util.UUID
 import feh.util._
-import scala.collection.immutable
+import scala.collection.mutable
 import scala.language.existentials
 
 case class NegotiationId(name: String){
@@ -23,7 +22,7 @@ object Negotiation{
 
     val id: NegotiationId
 
-    private var negVars: Map[NegotiationVar, NegVar[_]] = Map()
+    protected val negVars = mutable.Map.empty[NegotiationVar, NegVar[_]]
 
     protected class NegVar[V <: NegotiationVar](id: V)(var valueOpt: Option[V#T]){
       negVars += id -> this
@@ -31,12 +30,6 @@ object Negotiation{
       def value = valueOpt getOrThrow NegotiationVar.UndefinedException(id, neg)
       def value_=(t: V#T) = valueOpt = Some(t)
     }
-
-    def issues = negVars.keySet.toSeq.collect{
-      case NegotiationVar.Issue(nVar) => nVar
-    }
-
-    def issueValues = issues.flatMap(iss => get(NegotiationVar.Issue(iss)).map(iss -> _)).toMap
 
     def addNegVarDefaults(p: (NegotiationVar, Option[Any])*) = negVarDefaults ++= p
     private var negVarDefaults: Map[NegotiationVar, Option[Any]] = Map()
@@ -69,7 +62,7 @@ object Negotiation{
     def transform[V <: NegotiationVar](negVar: V)(f: V#T => V#T) =
       transformOpt(negVar)(_.get |> f)
 
-    def report: Map[NegotiationVar, Any] = negVars.mapValues(_.valueOpt.orNull)
+    def report: Map[NegotiationVar, Any] = negVars.toMap.mapValues(_.valueOpt.orNull)
 
     protected def notifyVarUpdated[V <: NegotiationVar](upd: Negotiation.VarUpdated[V]): Unit
 
@@ -93,14 +86,7 @@ object Negotiation{
 
     object defineVar{
       def apply[V <: NegotiationVar](id: V) = new NegVar[V](id)(None)
-
-      def priority = apply(NegotiationVar.Priority)
-
-      def forIssue[T](v: Var[T], domain: Traversable[T]) = {
-        apply(NegotiationVar.Issue(v))
-        apply(NegotiationVar.IssueDomain(v))
-        set(NegotiationVar.IssueDomain(v))(domain.toIndexedSeq)
-      }
+      def withDefault[V <: NegotiationVar](id: V)(default: V#T) = new NegVar[V](id)(Option(default))
     }
   }
 }
@@ -123,19 +109,8 @@ object NegotiationVar{
   case class UndefinedException(negVar: NegotiationVar, negotiation: Negotiation.NegotiationBase)
     extends Exception(s"$negVar is undefined in $negotiation")
 
-  case object Scope extends NegotiationVar{ type T = Set[NegotiatingAgentRef]}
-  case object State extends NegotiationVar{ type T = NegotiationState}
-  case object Priority extends NegotiationVar{ type T = Int}
-
-  case class Issue[I](issue: Var[I]) extends NegotiationVar{ type T = I}
-  case class IssueDomain[I](issue: Var[I]) extends NegotiationVar{ type T = immutable.Traversable[I]}
-
-  case object CurrentIssues extends NegotiationVar{ type T = Seq[Var[_]]}
-  case object DomainIterator extends NegotiationVar{ type T = Iterator[Map[Var[Any], Any]]}
-
-  case object CurrentProposal extends NegotiationVar{ type T = NegotiationMessage}
-  case object AwaitingResponse extends NegotiationVar{ type T = Option[UUID]}
-  case object ProposalAcceptance extends NegotiationVar{ type T = Map[NegotiatingAgentRef, Boolean]}
+  case object Scope extends NegotiationVar{ type T = Set[NegotiatingAgentRef] }
+  case object State extends NegotiationVar{ type T = NegotiationState }
 }
 
 case class Var[+T](name: String)

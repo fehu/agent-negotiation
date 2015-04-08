@@ -1,15 +1,15 @@
 package feh.tec.agents.comm.agent
 
-import feh.tec.agents.comm.{NegotiationId, Var}
+import feh.tec.agents.comm.{NegotiationVar, NegotiationId, Var}
 import scala.language.existentials
-import feh.tec.agents.comm.{NegotiationVar => NVar}
+import feh.tec.agents.comm.negotiations.Issues.{Vars => IVar}
 
 trait DomainIterators {
   agent: Negotiating =>
 
   def iteratorFor(negId: NegotiationId, issues: Seq[Var[_]]): Iterator[Map[Var[Any], Any]] = {
     val neg = negotiation(negId)
-    val domains = issues.toList.map(issue => issue -> neg(NVar.IssueDomain(issue)).toStream)
+    val domains = issues.toList.map(issue => issue -> neg(IVar.IssueDomain(issue)).toStream)
     domainValuesStream(Map(), domains).toIterator
   }
 

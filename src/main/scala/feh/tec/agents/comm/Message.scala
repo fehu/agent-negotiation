@@ -14,6 +14,10 @@ trait Message extends HasUUID with Equals{
   val asString: String
 
   override def toString = s"$tpe($asString) by ${sender.id}"
+
+  override def equals(obj: scala.Any): Boolean = (this canEqual obj) && (obj match {
+    case that: Message => that.uuid == this.uuid
+  })
 }
 
 trait NegotiationMessage extends Message{

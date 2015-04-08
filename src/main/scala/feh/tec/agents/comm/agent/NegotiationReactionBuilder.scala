@@ -1,6 +1,9 @@
 package feh.tec.agents.comm.agent
 
 import feh.tec.agents.comm._
+import feh.tec.agents.comm.negotiations.Prioritized.PrioritizedMessage
+import feh.tec.agents.comm.negotiations.Prioritized.Vars.Priority
+import feh.tec.agents.comm.negotiations.Proposals
 
 /** Helps to create [[PartialFunction]]s for `messageReceived`
  */
@@ -32,14 +35,14 @@ trait NegotiationReactionBuilder {
   object WithHigherPriority{
     def unapply(msg: NegotiationMessage): Boolean = {
       if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
-      msg.asInstanceOf[PrioritizedMessage].priority > negotiation(msg.negotiation)(NegotiationVar.Priority)
+      msg.asInstanceOf[PrioritizedMessage].priority > negotiation(msg.negotiation)(Priority)
     }
   }
 
   object WithLowerPriority{
     def unapply(msg: NegotiationMessage): Boolean = {
       if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
-      msg.asInstanceOf[PrioritizedMessage].priority < negotiation(msg.negotiation)(NegotiationVar.Priority)
+      msg.asInstanceOf[PrioritizedMessage].priority < negotiation(msg.negotiation)(Priority)
     }
   }
 
@@ -48,7 +51,7 @@ trait NegotiationReactionBuilder {
     def unapply(msg: NegotiationMessage): Option[Int] = {
       if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
       Some{
-        msg.asInstanceOf[PrioritizedMessage].priority - negotiation(msg.negotiation)(NegotiationVar.Priority)
+        msg.asInstanceOf[PrioritizedMessage].priority - negotiation(msg.negotiation)(Priority)
       }
     }
   }
@@ -56,7 +59,7 @@ trait NegotiationReactionBuilder {
   object AwaitingResponse{
     def unapply(msg: NegotiationMessage): Boolean = {
       if(!msg.isInstanceOf[NegotiationResponse]) sys.error(s"$msg isn't response")
-      negotiation(msg.negotiation)(NegotiationVar.AwaitingResponse)
+      negotiation(msg.negotiation)(Proposals.Vars.AwaitingResponse)
         .contains(msg.asInstanceOf[NegotiationResponse].respondingTo)
     }
   }

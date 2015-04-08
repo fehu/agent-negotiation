@@ -3,6 +3,8 @@ package feh.tec.agents.comm.agent
 import akka.actor.Actor
 import feh.tec.agents.comm._
 
+import scala.collection.mutable
+
 trait AgentActor extends Actor{
   val id: AgentId
   implicit val ref: AgentRef
@@ -70,16 +72,39 @@ object AgentState{
 trait Negotiating{
   agent: AgentActor =>
 
-  /**should be called only once*/
-  protected def initializeNegotiations: Seq[(Negotiation.VarUpdated[_ <: NegotiationVar] => Unit) => Negotiation]
+//  /**should be called only once*/
+//  protected def initializeNegotiations: Seq[(Negotiation.VarUpdated[_ <: NegotiationVar] => Unit) => Negotiation]
+//  val negotiations: Set[Negotiation] = initializeNegotiations.map(_(onVarChanged)).toSet
 
   protected def onVarChanged(change: Negotiation.VarUpdated[_ <: NegotiationVar])
 
-  val negotiations: Set[Negotiation] = initializeNegotiations.map(_(onVarChanged)).toSet
+  protected val _negotiations = mutable.Map.empty[NegotiationId, Negotiation]
 
-  private val negotiationsMap = negotiations.map(n => n.id -> n).toMap
+  def negotiations: Map[NegotiationId, Negotiation] = _negotiations.toMap
 
-  def negotiation(id: NegotiationId): Negotiation = negotiationsMap(id)
+  def negotiation(id: NegotiationId): Negotiation = _negotiations(id)
 
-  def eachNegotiation(f: (Negotiation => Unit)*) = negotiations.foreach(neg => f.foreach(_(neg)))
+  def eachNegotiation(f: (Negotiation => Unit)*): Unit = negotiations.mapValues(neg => f.foreach(_(neg)))
 }
+
+object Negotiating{
+  trait PredefinedNegotiations extends Negotiating{
+    agent: AgentActor =>
+
+    protected def initializeNegotiations: Seq[(Negotiation.VarUpdated[_ <: NegotiationVar] => Unit) => Negotiation]
+
+    _negotiations ++= initializeNegotiations.map(_(onVarChanged)).map(n => n.id -> n)
+  }
+
+  trait DynamicNegotiations extends Negotiating{
+    agent: AgentActor =>
+
+    def add(neg: Negotiation): NegotiationId = { _negotiations += neg.id -> neg; neg.id }
+    def rm(id: NegotiationId): Unit  = _negotiations.remove(id)
+  }
+
+  object DynamicNegotiations{
+    trait DynamicNegotiationsMessage // todo
+  }
+}
+
