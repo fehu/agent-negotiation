@@ -2,16 +2,21 @@ package feh.tec.agents.comm.negotiations
 
 import java.util.UUID
 
+import feh.tec.agents.comm.Message.HasValues
 import feh.tec.agents.comm.{NegotiatingAgentRef, Message, Var, NegotiationMessage}
 import feh.util.UUIDed
 
 object Establishing {
 
   trait NegotiationEstablishingMessage extends UUIDed with Message{
-    val myValues: Map[Var[Any], Any]
+    val values: Map[Var[Any], Any]
     override val sender: NegotiatingAgentRef
 
-    val asString = myValues mkString ", "
+    val asString = values mkString ", "
+  }
+
+  implicit def itHasValues = new HasValues[NegotiationEstablishingMessage] {
+    def values = _.values
   }
 
   trait NegotiationProposition extends NegotiationEstablishingMessage{

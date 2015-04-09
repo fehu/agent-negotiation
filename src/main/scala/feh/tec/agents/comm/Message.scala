@@ -1,8 +1,7 @@
 package feh.tec.agents.comm
 
 import java.util.UUID
-
-import feh.util.{UUIDed, HasUUID}
+import feh.util._
 
 trait Message extends HasUUID with Equals{
   val sender: AgentRef
@@ -69,4 +68,17 @@ object SystemMessage{
     val tpe = "ReportStates"
     val asString = s"of $of"
   }
+}
+
+object Message{
+  trait HasValues[-Msg <: Message]{
+    def values: Msg => Map[Var[Any], Any]
+
+    def valueOpt[T]: Msg => Var[T] => Option[T] = msg => v => values(msg).get(v).map(_.asInstanceOf[T])
+    def value[T]   : Msg => Var[T] => T         = msg => v => valueOpt(msg)(v).getOrThrow(s"var $v not found in $msg")
+  }
+
+//  class BasicHasValues[-Msg <: Message]() extends HasValues[Msg] {
+//    def values: Msg => Map[Var[Any], Any]
+//  }
 }

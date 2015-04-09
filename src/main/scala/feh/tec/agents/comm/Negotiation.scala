@@ -51,7 +51,7 @@ object Negotiation{
       getNegVar(negVar).value = value
      notifyVarUpdated(id, negVar, old, value)
     }
-    def update[V <: NegotiationVar](negVar: V, value: V#T) = set(negVar)(value)
+//    def update[V <: NegotiationVar](negVar: V, value: V#T) = set(negVar)(value)
 
     def transformOpt[V <: NegotiationVar](negVar: V)(f: Option[V#T] => V#T) = {
       val old = get(negVar)

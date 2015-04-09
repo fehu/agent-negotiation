@@ -1,9 +1,11 @@
 package feh.tec.agents.comm.agent
 
+import feh.tec.agents.comm.Message.HasValues
 import feh.tec.agents.comm._
 import feh.tec.agents.comm.negotiations.Prioritized.PrioritizedMessage
 import feh.tec.agents.comm.negotiations.Prioritized.Vars.Priority
 import feh.tec.agents.comm.negotiations.Proposals
+import feh.util._
 
 /** Helps to create [[PartialFunction]]s for `messageReceived`
  */
@@ -14,6 +16,12 @@ trait NegotiationReactionBuilder {
 //  def reactOnMessage(): Agent.OnMessage
 
 //  protected trait MessageCondition
+
+  def getFromMsg[Msg <: Message : HasValues, T](msg: Msg, v: Var[T]) = implicitly[HasValues[Msg]].value(msg)(v)
+
+  implicit class GetFromMsgWrapper[Msg <: Message : HasValues, T](msg: Msg){
+    def get(v: Var[T]) = getFromMsg(msg, v)
+  }
 
   object NegMsg{
     def unapply(msg: Message): Option[NegotiationMessage] = PartialFunction.condOpt(msg){

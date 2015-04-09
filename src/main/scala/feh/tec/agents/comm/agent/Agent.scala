@@ -78,7 +78,7 @@ trait Negotiating{
 
   protected def onVarChanged(change: Negotiation.VarUpdated[_ <: NegotiationVar])
 
-  protected val _negotiations = mutable.Map.empty[NegotiationId, Negotiation]
+  private[agent] val _negotiations = mutable.Map.empty[NegotiationId, Negotiation]
 
   def negotiations: Map[NegotiationId, Negotiation] = _negotiations.toMap
 
