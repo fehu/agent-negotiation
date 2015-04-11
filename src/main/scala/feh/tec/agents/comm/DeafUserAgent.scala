@@ -1,6 +1,10 @@
 package feh.tec.agents.comm
 
-class DeafUserAgent(val id: UserAgentId, act: DeafUserAgent => Unit) extends UserAgent{
+class DeafUserAgent(val id      : UserAgentId,
+                    val creator : Option[AgentRef],
+                        act     : DeafUserAgent => Unit)
+  extends UserAgent
+{
   def start() = {}
   def stop() = {}
 
@@ -16,6 +20,6 @@ class DeafUserAgent(val id: UserAgentId, act: DeafUserAgent => Unit) extends Use
 
 object DeafUserAgent{
   def creator(role: String, act: DeafUserAgent => Unit) = AgentCreator(UserAgentRole(role)){
-    id => new DeafUserAgent(id, act)
+    id => cref => new DeafUserAgent(id, cref, act)
   }
 }

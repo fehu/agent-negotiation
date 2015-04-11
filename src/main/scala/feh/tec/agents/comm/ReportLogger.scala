@@ -106,7 +106,7 @@ class ReportStdPrinter(val id: SystemAgentId)(implicit format: ReportLogFormat) 
 
 object ReportStdPrinter{
   def creator(role: String)(implicit format: ReportLogFormat) =
-    AgentCreator(SystemAgentRole(role)){id => new ReportStdPrinter(id)}
+    AgentCreator(SystemAgentRole(role)){id => _ => new ReportStdPrinter(id)}
 }
 
 // TODO
@@ -157,5 +157,5 @@ class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path)(implicit for
 
 object ReportDistributedPrinter{
   def creator(role: String, logDir: String)(implicit format: ReportLogFormat) =
-    AgentCreator(SystemAgentRole(role)){id => new ReportDistributedPrinter(id, logDir)}
+    AgentCreator(SystemAgentRole(role)){id => _ => new ReportDistributedPrinter(id, logDir)}
 }

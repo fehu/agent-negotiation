@@ -1,6 +1,7 @@
 package feh.tec.agents.comm.agent
 
 import akka.actor.Actor
+import akka.util.Timeout
 import feh.tec.agents.comm._
 
 import scala.collection.mutable
@@ -44,6 +45,14 @@ trait MessageSending {
       id.ref ! msg
     }
   }
+
+  implicit class SenAskMessage(id: AgentRef)(implicit timeout: Timeout){
+    def ?(msg: Message) = {
+      onMessageSent(msg, id)
+      akka.pattern.ask(id.ref, msg)
+    }
+  }
+
 
 }
 

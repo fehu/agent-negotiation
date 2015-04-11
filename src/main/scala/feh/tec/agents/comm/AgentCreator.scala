@@ -11,17 +11,17 @@ sealed trait AgentCreator[Ag <: AgentActor] { /*[+Ag <: Agent, +Role <: AgentRol
   type Ref <: AgentRef
 
   val role: AgentRole
-  protected val creation: Id => Ag
+  protected val creation: Id => Option[AgentRef] => Ag
   implicit val clazz: ClassTag[Ag]
 
-  protected def props(id: Id): Props = Props(creation(id))
+  protected def props(id: Id, createdByOpt: Option[AgentRef]): Props = Props(creation(id)(createdByOpt))
 
   protected def id(name: UniqueName): Id
   protected def ref(id: Id, actor: ActorRef): Ref
 
-  def create(name: UniqueName)(implicit actFactory: ActorRefFactory): Ref = {
+  def create(name: UniqueName)(implicit actFactory: ActorRefFactory, createdByOpt: AgentRef = null): Ref = {
     val agId = id(name)
-    val actor = actFactory.actorOf(props(agId), name)
+    val actor = actFactory.actorOf(props(agId, Option(createdByOpt)), name)
     ref(agId, actor)
   }
 }
@@ -32,7 +32,7 @@ object AgentCreator{
 //    new NegotiatingAgentCreation(role, clazz, creation)
 
   def apply[Ag <: NegotiatingAgent: ClassTag](role: NegotiationRole)
-                                             (creation: NegotiatingAgentId => Ag): NegotiatingAgentCreator[Ag] =
+                                             (creation: NegotiatingAgentId => Option[AgentRef] => Ag): NegotiatingAgentCreator[Ag] =
     new NegotiatingAgentCreator(role, implicitly, creation)
 
 //  def apply[Ag <: SystemAgent](role: SystemAgentRole, clazz: ClassTag[Ag])
@@ -40,18 +40,18 @@ object AgentCreator{
 //    new SystemAgentCreation(role, clazz, creation)
 
   def apply[Ag <: SystemAgent: ClassTag](role: SystemAgentRole)
-                                        (creation: SystemAgentId => Ag): SystemAgentCreator[Ag] =
+                                        (creation: SystemAgentId => Option[AgentRef] => Ag): SystemAgentCreator[Ag] =
     new SystemAgentCreator(role, implicitly, creation)
 
   def apply[Ag <: UserAgent: ClassTag](role: UserAgentRole)
-                                       (creation: UserAgentId => Ag): UserAgentCreator[Ag] =
+                                       (creation: UserAgentId => Option[AgentRef] => Ag): UserAgentCreator[Ag] =
     new UserAgentCreator[Ag](role, implicitly, creation)
 }
 
 final class NegotiatingAgentCreator[Ag <: NegotiatingAgent](
                                       val role: NegotiationRole,
                                       implicit val clazz: ClassTag[Ag],
-                                      protected val creation: NegotiatingAgentId => Ag) extends AgentCreator[Ag]{
+                                      protected val creation: NegotiatingAgentId => Option[AgentRef] => Ag) extends AgentCreator[Ag]{
   type Id  = NegotiatingAgentId
   type Ref = NegotiatingAgentRef
 
@@ -62,7 +62,7 @@ final class NegotiatingAgentCreator[Ag <: NegotiatingAgent](
 final class SystemAgentCreator[Ag <: SystemAgent](
                                 val role: SystemAgentRole,
                                 implicit val clazz: ClassTag[Ag],
-                                protected val creation: SystemAgentId => Ag) extends AgentCreator[Ag]{
+                                protected val creation: SystemAgentId => Option[AgentRef] => Ag) extends AgentCreator[Ag]{
   type Id  = SystemAgentId
   type Ref = SystemAgentRef
 
@@ -73,7 +73,7 @@ final class SystemAgentCreator[Ag <: SystemAgent](
 final class UserAgentCreator[Ag <: UserAgent](
                               val role: UserAgentRole,
                               implicit val clazz: ClassTag[Ag],
-                              protected val creation: UserAgentId => Ag) extends AgentCreator[Ag]{
+                              protected val creation: UserAgentId => Option[AgentRef] => Ag) extends AgentCreator[Ag]{
   type Id = UserAgentId
   type Ref = UserAgentRef
 

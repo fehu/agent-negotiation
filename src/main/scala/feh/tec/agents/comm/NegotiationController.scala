@@ -1,15 +1,13 @@
 package feh.tec.agents.comm
 
-import java.util.UUID
-
 import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
 import feh.util.UUIDed
 import scala.collection.mutable
 
 trait NegotiationController extends SystemAgent{
-  protected var negotiators: Seq[NegotiatingAgentRef] = Nil
-  private val negotiatorIndices = mutable.HashMap.empty[NegotiationRole, Int]
+  protected val negotiatorsByRole = mutable.Map    .empty[NegotiationRole, Seq[NegotiatingAgentRef]]
+  private val negotiatorIndices   = mutable.HashMap.empty[NegotiationRole, Int]
 
   def nameForAgent(role: NegotiationRole, index: Int): String
 
@@ -25,11 +23,13 @@ trait NegotiationController extends SystemAgent{
   def start() = {}
   def stop() = stopNegotiation()
 
-  def initialize(): Unit = negotiators.foreach(initializeNegotiator)
+  def initialize(): Unit = foreachNegotiator(initializeNegotiator)
 
-  def startNegotiation(): Unit = negotiators.foreach(_.ref ! SystemMessage.Start())
+  def startNegotiation(): Unit = foreachNegotiator(_.ref ! SystemMessage.Start())
 
-  def stopNegotiation(): Unit = negotiators.foreach(_.ref ! SystemMessage.Stop())
+  def stopNegotiation(): Unit = foreachNegotiator(_.ref ! SystemMessage.Stop())
+
+  protected def foreachNegotiator(f: NegotiatingAgentRef => Unit): Unit = negotiatorsByRole.values foreach (_ foreach f)
 }
 
 object ControllerMessage{
@@ -45,10 +45,10 @@ object NegotiationController{
 
     def initialNegotiatorsCreators: Seq[NegotiatingAgentCreator[_]]
 
-    private def initialNegotiators(implicit actFactory: ActorRefFactory): Seq[NegotiatingAgentRef] =
-      initialNegotiatorsCreators map create
+    private def initialNegotiators(implicit actFactory: ActorRefFactory) =
+      initialNegotiatorsCreators groupBy (_.role) mapValues (_ map create)
 
-    override def start(): Unit = negotiators ++= initialNegotiators(context)
+    override def start(): Unit = negotiatorsByRole ++= initialNegotiators(context)
   }
 
   object Supervision{
