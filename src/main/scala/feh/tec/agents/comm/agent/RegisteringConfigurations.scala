@@ -1,6 +1,7 @@
 package feh.tec.agents.comm.agent
 
-import feh.tec.agents.comm.{NegotiationId, Var, NegotiationVar, NegotiatingAgent}
+import feh.tec.agents.comm.negotiations.Var
+import feh.tec.agents.comm.{NegotiationVar, NegotiatingAgent}
 
 trait RegisteringConfigurations{ // todo
   agent: NegotiatingAgent =>

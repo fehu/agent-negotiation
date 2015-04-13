@@ -1,6 +1,7 @@
 package feh.tec.agents.comm
 
 import java.util.UUID
+import feh.tec.agents.comm.negotiations.Var
 import feh.util._
 
 trait Message extends HasUUID with Equals{

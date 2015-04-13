@@ -1,9 +1,11 @@
 package feh.tec.agents.comm.negotiations
 
 import feh.tec.agents.comm.Negotiation.NegotiationBase
-import feh.tec.agents.comm.{Negotiation, NegotiationVar, NegotiationMessage, Var}
+import feh.tec.agents.comm.{Negotiation, NegotiationVar, NegotiationMessage}
 
 import scala.collection.immutable
+
+case class Var[+T](name: String)
 
 object Issues{
   sealed trait Action

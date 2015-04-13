@@ -4,7 +4,7 @@ import feh.tec.agents.comm.Message.HasValues
 import feh.tec.agents.comm._
 import feh.tec.agents.comm.negotiations.Prioritized.PrioritizedMessage
 import feh.tec.agents.comm.negotiations.Prioritized.Vars.Priority
-import feh.tec.agents.comm.negotiations.Proposals
+import feh.tec.agents.comm.negotiations.{Var, Proposals}
 import feh.util._
 
 /** Helps to create [[PartialFunction]]s for `messageReceived`

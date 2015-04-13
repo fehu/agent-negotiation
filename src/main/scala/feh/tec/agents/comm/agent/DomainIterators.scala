@@ -1,6 +1,7 @@
 package feh.tec.agents.comm.agent
 
-import feh.tec.agents.comm.{NegotiationVar, NegotiationId, Var}
+import feh.tec.agents.comm.negotiations.Var
+import feh.tec.agents.comm.{NegotiationVar, NegotiationId}
 import scala.language.existentials
 import feh.tec.agents.comm.negotiations.Issues.{Vars => IVar}
 

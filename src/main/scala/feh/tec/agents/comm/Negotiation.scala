@@ -112,5 +112,3 @@ object NegotiationVar{
   case object Scope extends NegotiationVar{ type T = Set[NegotiatingAgentRef] }
   case object State extends NegotiationVar{ type T = NegotiationState }
 }
-
-case class Var[+T](name: String)

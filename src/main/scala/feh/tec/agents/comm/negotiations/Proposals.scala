@@ -8,14 +8,16 @@ import feh.tec.agents.comm._
 object Proposals {
   trait ProposalMessage extends NegotiationMessage{
     val myValues: Map[Var[Any], Any]
+
+    lazy val asString = myValues.mkString(", ")
   }
   
-  trait Proposal extends ProposalMessage
+  trait Proposal extends ProposalMessage{   val tpe = "Proposal" }
   
-  trait Acceptance extends ProposalMessage
-  trait Rejection extends ProposalMessage
+  trait Acceptance extends ProposalMessage with NegotiationResponse{ val tpe = "Acceptance" }
+  trait Rejection  extends ProposalMessage with NegotiationResponse{ val tpe = "Rejection" }
 
-  trait CounterProposal extends Rejection
+  trait CounterProposal  extends Rejection with NegotiationResponse{  override val tpe = "CounterProposal" }
 
   object Vars{
     case object CurrentProposal extends NegotiationVar{ type T = NegotiationMessage }

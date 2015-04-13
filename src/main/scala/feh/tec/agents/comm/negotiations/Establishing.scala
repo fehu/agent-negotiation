@@ -3,7 +3,7 @@ package feh.tec.agents.comm.negotiations
 import java.util.UUID
 
 import feh.tec.agents.comm.Message.HasValues
-import feh.tec.agents.comm.{NegotiatingAgentRef, Message, Var, NegotiationMessage}
+import feh.tec.agents.comm.{NegotiatingAgentRef, Message}
 import feh.util.UUIDed
 
 object Establishing {
