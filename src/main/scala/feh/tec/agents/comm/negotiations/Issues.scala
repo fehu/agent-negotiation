@@ -45,9 +45,11 @@ object Issues{
     def issueValues = issues.flatMap(iss => get(Vars.Issue(iss)).map(iss -> _)).toMap
 
     def forIssue[T](v: Var[T], domain: Traversable[T]) = {
-      apply(Vars.Issue(v))
-      apply(Vars.IssueDomain(v))
-      set(Vars.IssueDomain(v))(domain.toIndexedSeq)
+      defineVar(Vars.Issue(v))
+      if(domain.nonEmpty) {
+        defineVar(Vars.IssueDomain(v))
+        set(Vars.IssueDomain(v))(domain.toIndexedSeq)
+      }
     }
 
 
