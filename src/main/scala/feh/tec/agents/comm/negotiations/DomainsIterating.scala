@@ -1,7 +1,7 @@
 package feh.tec.agents.comm.negotiations
 
 import feh.tec.agents.comm.Negotiation.NegotiationBase
-import feh.tec.agents.comm.{Negotiation, Var, NegotiationVar}
+import feh.tec.agents.comm.{Negotiation, NegotiationVar}
 
 object DomainsIterating {
 
