@@ -12,7 +12,7 @@ object Establishing {
     val values: Map[Var[Any], Any]
     override val sender: NegotiatingAgentRef
 
-    val asString = values mkString ", "
+    lazy val asString = values mkString ", "
   }
 
   implicit def itHasValues = new HasValues[NegotiationEstablishingMessage] {

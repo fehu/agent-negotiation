@@ -43,11 +43,11 @@ object SystemMessage{
     val asString = ""
   }
   protected abstract class NegotiationScopeControl(doWithScope: String) extends UUIDed() with SystemMessage {
-    val neg: NegotiationId
+//    val neg: NegotiationId
     val scope: Set[NegotiatingAgentRef]
 
     val tpe = doWithScope + "Scope"
-    val asString = s"$neg: ${scope.mkString(", ")}"
+    val asString = scope.mkString(", ")
   }
 
   case class Start(implicit val sender: AgentRef) extends NoContentSystemMessage("Start")
