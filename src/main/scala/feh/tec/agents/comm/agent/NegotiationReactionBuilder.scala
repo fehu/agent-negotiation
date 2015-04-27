@@ -8,7 +8,9 @@ import feh.tec.agents.comm.negotiations.{Var, Proposals}
 import feh.util._
 
 /** Helps to create [[PartialFunction]]s for `messageReceived`
+ * TODO: !!!!!!!!!!!!!!!!!!!!!! seems not to work well
  */
+@deprecated("seems not to work well")
 trait NegotiationReactionBuilder {
   agent: Negotiating =>
 
@@ -32,6 +34,8 @@ trait NegotiationReactionBuilder {
   trait MessageMatchPair{
     def unapply(msg: NegotiationMessage): Option[(NegotiationMessage, NegotiationMessage)] = Some(msg, msg)
   }
+
+  // TODO: !!!!!!!!!!!!!!!!!!!!!! seems not to work well
 
 //  object suchThat extends MessageMatchPair
   object & extends MessageMatchPair
