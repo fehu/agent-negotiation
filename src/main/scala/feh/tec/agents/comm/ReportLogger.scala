@@ -37,7 +37,7 @@ trait ReportForwarder extends ReportLogger{
   }
 }
 
-sealed abstract class Report extends UUIDed() with Message{
+abstract class Report extends UUIDed() with Message{
   def by = sender
   def isSevere: Boolean
 }
