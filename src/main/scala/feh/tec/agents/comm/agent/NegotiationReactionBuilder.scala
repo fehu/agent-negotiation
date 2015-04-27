@@ -65,11 +65,17 @@ trait NegotiationReactionBuilder {
   }
 
   object AwaitingResponse{
-    def unapply(msg: NegotiationMessage): Boolean = {
-      if(!msg.isInstanceOf[NegotiationResponse]) sys.error(s"$msg isn't response")
+    def unapply(msg: NegotiationResponse): Boolean =
       negotiation(msg.negotiation)(Proposals.Vars.AwaitingResponse)
-        .contains(msg.asInstanceOf[NegotiationResponse].respondingTo)
-    }
+        .contains(msg.respondingTo)
+  }
+
+  def awaitResponseFor(msg: NegotiationMessage){
+    negotiation(msg.negotiation).set(Proposals.Vars.AwaitingResponse)(Option(msg.uuid))
+  }
+
+  def noResponsesExpected(neg: NegotiationId): Unit ={
+    negotiation(neg).set(Proposals.Vars.AwaitingResponse)(None)
   }
 
   //  case class &(l: MessageCondition, r: MessageCondition) extends MessageCondition{
