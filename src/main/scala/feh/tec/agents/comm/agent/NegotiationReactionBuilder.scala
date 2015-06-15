@@ -1,5 +1,7 @@
 package feh.tec.agents.comm.agent
 
+import java.util.UUID
+
 import feh.tec.agents.comm.Message.HasValues
 import feh.tec.agents.comm._
 import feh.tec.agents.comm.negotiations.Prioritized.PrioritizedMessage
@@ -65,10 +67,11 @@ trait NegotiationReactionBuilder {
   }
 
   object AwaitingResponse{
-    def unapply(msg: NegotiationResponse): Boolean =
-      negotiation(msg.negotiation)(Proposals.Vars.AwaitingResponse)
-        .contains(msg.respondingTo)
+    def unapply(msg: NegotiationResponse): Boolean = awaitResponseFor_?(msg.negotiation, msg.respondingTo)
   }
+
+  def awaitResponseFor_?(neg: NegotiationId, id: UUID): Boolean =
+    negotiation(neg)(Proposals.Vars.AwaitingResponse).contains(id)
 
   def awaitResponseFor(msg: NegotiationMessage){
     negotiation(msg.negotiation).set(Proposals.Vars.AwaitingResponse)(Option(msg.uuid))

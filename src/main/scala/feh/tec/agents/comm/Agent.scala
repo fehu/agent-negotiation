@@ -60,3 +60,7 @@ sealed trait AgentRef extends Equals{
 final case class NegotiatingAgentRef(id: NegotiatingAgentId, protected[comm] val ref: ActorRef) extends AgentRef
 final case class SystemAgentRef(id: SystemAgentId, protected[comm] val ref: ActorRef) extends AgentRef
 final case class UserAgentRef(id: UserAgentId, protected[comm] val ref: ActorRef) extends AgentRef
+
+final case class ActorRefExtractor(agRef: AgentRef){
+  def actorRef = agRef.ref
+}
