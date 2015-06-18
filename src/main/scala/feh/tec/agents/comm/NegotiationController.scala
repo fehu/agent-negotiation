@@ -4,6 +4,7 @@ import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
 import feh.util.UUIDed
 import scala.collection.mutable
+import feh.util._
 
 trait NegotiationController extends SystemAgent{
   protected val negotiatorsByRole = mutable.Map    .empty[NegotiationRole, Seq[NegotiatingAgentRef]]
@@ -49,6 +50,24 @@ object NegotiationController{
       initialNegotiatorsCreators groupBy (_.role) mapValues (_ map create)
 
     override def start(): Unit = negotiatorsByRole ++= initialNegotiators(context)
+  }
+
+  trait AgentsManipulation{
+    controller: NegotiationController =>
+
+    protected def addAgent(ref: NegotiatingAgentRef) = {
+      negotiatorsByRole <<= (ref.id.role, _.map(ref +: _) getOrElse Seq(ref))
+    }
+
+    def newAgent(creator: NegotiatingAgentCreator[_])(implicit actFactory: ActorRefFactory) = addAgent(create(creator))
+
+    def findAgent(id: NegotiatingAgentId) = negotiatorsByRole.get(id.role).flatMap(_.find(_.id == id))
+
+    def delAgent(id: NegotiatingAgentId) = findAgent(id) foreach {
+      agRef =>
+        agRef ! SystemMessage.Stop()
+        negotiatorsByRole(id.role) = negotiatorsByRole(id.role).filter(_.id != id)
+    }
   }
 
   object Supervision{

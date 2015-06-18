@@ -4,9 +4,17 @@ import feh.util._
 import scala.collection.mutable
 import scala.language.existentials
 
-case class NegotiationId(name: String){
-  override lazy val toString = s"Negotiation($name)"
+trait NegotiationId{
+  def name: String
+
+  override def toString: String = s"Negotiation($name)"
 }
+
+object NegotiationId{
+  def apply(id: String) = SimpleNegotiationId(id)
+}
+
+case class SimpleNegotiationId(name: String) extends NegotiationId
 
 abstract class Negotiation(val id: NegotiationId, varUpdated: Negotiation.VarUpdated[_ <: NegotiationVar] => Unit)
   extends Negotiation.NegotiationBase with Negotiation.VarsCreation{
