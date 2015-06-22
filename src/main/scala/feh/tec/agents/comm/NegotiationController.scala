@@ -62,7 +62,11 @@ object NegotiationController{
       negotiatorsByRole <<= (ref.id.role, _.map(ref +: _) getOrElse Seq(ref))
     }
 
-    def newAgent(creator: NegotiatingAgentCreator[_])(implicit actFactory: ActorRefFactory) = addAgent(create(creator))
+    def newAgent(creator: NegotiatingAgentCreator[_])(implicit actFactory: ActorRefFactory) = {
+      val ag = create(creator)
+      addAgent(ag)
+      ag
+    }
 
     def findAgent(id: NegotiatingAgentId) = negotiatorsByRole.get(id.role).flatMap(_.find(_.id == id))
 
