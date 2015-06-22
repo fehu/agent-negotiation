@@ -9,6 +9,7 @@ import scala.collection.mutable
 trait AgentActor extends Actor{
   val id: AgentId
   implicit val ref: AgentRef
+  def stopped: Boolean
 
   def systemMessageReceived: PartialFunction[SystemMessage, Unit]
   def messageReceived: PartialFunction[Message, Unit]
@@ -18,6 +19,7 @@ trait AgentActor extends Actor{
   def receive: Receive = {
     case sys: SystemMessage =>
       systemMessageReceived.applyOrElse(sys, unknownSystemMessage)
+    case _ if stopped => // do nothing
     case msg: Message if messageReceived.isDefinedAt(msg) =>
       onMessageReceived(msg, unhandled = false)
       messageReceived(msg)

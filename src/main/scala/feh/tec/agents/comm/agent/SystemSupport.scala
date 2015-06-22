@@ -12,10 +12,17 @@ trait SystemSupport {
   /** A SystemMessage was sent message by an agent with not a SystemAgentId */
   protected def systemMessageFraud(fraud: SystemMessage)
 
+  private var _stopped = false
+  def stopped = _stopped
+
   def systemMessageReceived: PartialFunction[SystemMessage, Unit] = {
     case fraud if !fraud.sender.id.isInstanceOf[SystemAgentId] => systemMessageFraud(fraud)
-    case _: SystemMessage.Start => start()
-    case _: SystemMessage.Stop  => stop()
+    case _: SystemMessage.Start =>
+      _stopped = false
+      start()
+    case _: SystemMessage.Stop  =>
+      _stopped = true
+      stop()
     case SystemMessage.Initialize(init@ _*) if state == AgentState.NotInitialized =>
       state = AgentState.Initializing
       init.foreach(systemMessageReceived)

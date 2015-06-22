@@ -8,12 +8,16 @@ class DeafUserAgent(val id      : UserAgentId,
   def start() = {}
   def stop() = {}
 
+  def stopped = true
+
   def messageReceived: PartialFunction[Message, Unit] = Map()
   def systemMessageReceived: PartialFunction[SystemMessage, Unit] = Map()
 
   protected def onMessageReceived(msg: Message, unhandled: Boolean) = {}
   protected def onMessageSent(msg: Message, to: AgentRef) = {}
   protected def unknownSystemMessage(sysMsg: SystemMessage) = {}
+
+
 
   act(this)
 }
