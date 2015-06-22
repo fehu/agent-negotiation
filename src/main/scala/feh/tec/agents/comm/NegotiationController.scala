@@ -21,6 +21,10 @@ trait NegotiationController extends SystemAgent{
     creator.create(nameForAgent(creator.role, index))
   }
 
+  def mkNegotiators(creators: NegotiatingAgentCreator[_]*)(implicit actFactory: ActorRefFactory) =
+    creators groupBy (_.role) mapValues (_ map create)
+
+
   def start() = {}
   def stop() = stopNegotiation()
 
@@ -46,8 +50,7 @@ object NegotiationController{
 
     def initialNegotiatorsCreators: Seq[NegotiatingAgentCreator[_]]
 
-    private def initialNegotiators(implicit actFactory: ActorRefFactory) =
-      initialNegotiatorsCreators groupBy (_.role) mapValues (_ map create)
+    private def initialNegotiators(implicit actFactory: ActorRefFactory) = mkNegotiators _ $ initialNegotiatorsCreators
 
     override def start(): Unit = negotiatorsByRole ++= initialNegotiators(context)
   }
