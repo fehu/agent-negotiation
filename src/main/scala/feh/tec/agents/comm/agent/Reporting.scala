@@ -32,7 +32,7 @@ trait ReportingNegotiations extends Reporting{
   class ReportingNegotiationsConfig(messageSent: Boolean = false,
                                     messageReceived: Boolean = false,
                                     messageUnhandled: Boolean = true,
-                                    var stateChanged: Boolean = true
+                                    val stateChanged: Boolean = true
                                      ) extends ReportingConfig(messageSent, messageReceived, messageUnhandled)
   {
     override def toString = super.toString + s", stateChanged: $stateChanged"

@@ -14,9 +14,11 @@ trait SystemSupport {
 
   private var _stopped = false
   def stopped = _stopped
+  protected def setStopped() = _stopped = true
 
   def systemMessageReceived: PartialFunction[SystemMessage, Unit] = {
-    case fraud if !fraud.sender.id.isInstanceOf[SystemAgentId] => systemMessageFraud(fraud)
+    case fraud if !fraud.sender.id.isInstanceOf[SystemAgentId]
+               && !fraud.sender.id.isInstanceOf[UserAgentId] => systemMessageFraud(fraud)
     case _: SystemMessage.Start =>
       _stopped = false
       start()

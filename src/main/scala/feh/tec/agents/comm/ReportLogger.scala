@@ -40,6 +40,7 @@ trait ReportForwarder extends ReportLogger{
 abstract class Report extends UUIDed() with Message{
   def by = sender
   def isSevere: Boolean
+  def underlyingMessage: Option[Message]
 }
 
 object Report{
@@ -49,6 +50,7 @@ object Report{
     val asString = msg.toString
     //    val sender = msg.sender
     def isSevere = false
+    def underlyingMessage = Some(msg)
   }
 
   case class MessageSent(msg: Message, to: AgentRef) extends Report{
@@ -56,6 +58,7 @@ object Report{
     val asString = s"${to.id} : $msg"
     val sender = msg.sender
     def isSevere = false
+    def underlyingMessage = Some(msg)
   }
 
   case class StatesReport(negotiation: NegotiationId, states: Map[NegotiationVar, Any])
@@ -63,24 +66,28 @@ object Report{
     val tpe = "StatesReport"
     val asString = negotiation.toString + " -- " + states.map{ case (k, v) => s"$k: $v" }.mkString(", ")
     def isSevere = false
+    def underlyingMessage = None
   }
 
   case class StateChanged(change: Negotiation.VarUpdated[_ <: NegotiationVar])(implicit val sender: AgentRef) extends Report{
     val tpe = "StateChanged"
     val asString = change.toString
     def isSevere = false
+    def underlyingMessage = None
   }
 
   case class SystemMessageFraud(fraud: SystemMessage)(implicit val sender: AgentRef) extends Report{
     val tpe = "SystemMessageFraud"
     val asString = fraud.toString
     def isSevere = true
+    def underlyingMessage = Some(fraud)
   }
 
   case class UnknownSystemMessage(unknown: SystemMessage)(implicit val sender: AgentRef) extends Report{
     val tpe = "UnknownSystemMessage"
     val asString = unknown.toString
     def isSevere = true
+    def underlyingMessage = Some(unknown)
   }
 }
 
