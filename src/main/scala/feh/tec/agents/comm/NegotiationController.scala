@@ -7,8 +7,10 @@ import scala.collection.mutable
 import feh.util._
 
 trait NegotiationController extends SystemAgent{
-  protected val negotiatorsByRole = mutable.Map    .empty[NegotiationRole, Seq[NegotiatingAgentRef]]
-  private val negotiatorIndices   = mutable.HashMap.empty[NegotiationRole, Int]
+  protected val negotiatorsByRole_ = mutable.Map    .empty[NegotiationRole, Seq[NegotiatingAgentRef]]
+  private val negotiatorIndices    = mutable.HashMap.empty[NegotiationRole, Int]
+
+  def negotiatorsByRole = negotiatorsByRole_.toMap
 
   def nameForAgent(role: NegotiationRole, index: Int): String
 
@@ -52,14 +54,14 @@ object NegotiationController{
 
     private def initialNegotiators(implicit actFactory: ActorRefFactory) = mkNegotiators _ $ initialNegotiatorsCreators
 
-    override def start(): Unit = negotiatorsByRole ++= initialNegotiators(context)
+    override def start(): Unit = negotiatorsByRole_ ++= initialNegotiators(context)
   }
 
   trait AgentsManipulation{
     controller: NegotiationController =>
 
     protected def addAgent(ref: NegotiatingAgentRef) = {
-      negotiatorsByRole <<= (ref.id.role, _.map(ref +: _) getOrElse Seq(ref))
+      negotiatorsByRole_ <<= (ref.id.role, _.map(ref +: _) getOrElse Seq(ref))
     }
 
     def newAgent(creator: NegotiatingAgentCreator[_])(implicit actFactory: ActorRefFactory) = {
@@ -73,7 +75,7 @@ object NegotiationController{
     def delAgent(id: NegotiatingAgentId) = findAgent(id) foreach {
       agRef =>
         agRef ! SystemMessage.Stop()
-        negotiatorsByRole(id.role) = negotiatorsByRole(id.role).filter(_.id != id)
+        negotiatorsByRole_(id.role) = negotiatorsByRole(id.role).filter(_.id != id)
     }
   }
 
