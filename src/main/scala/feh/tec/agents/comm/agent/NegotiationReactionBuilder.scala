@@ -42,6 +42,10 @@ trait NegotiationReactionBuilder {
     def unapply(msg: NegotiationMessage): Option[NegotiationState] = negotiation(msg.negotiation).get(NegotiationVar.State)
   }
 
+  object WithNegotiation{
+    def unapply(msg: NegotiationMessage): Option[Negotiation] = Some(negotiation(msg.negotiation))
+  }
+
   object WithHigherPriority{
     def unapply(msg: NegotiationMessage): Boolean = {
       if(!msg.isInstanceOf[PrioritizedMessage]) sys.error(s"$msg doesn't have priority")
@@ -68,6 +72,10 @@ trait NegotiationReactionBuilder {
 
   object AwaitingResponse{
     def unapply(msg: NegotiationResponse): Boolean = awaitResponseFor_?(msg.negotiation, msg.respondingTo)
+  }
+
+  object NotAwaitingResponse{
+    def unapply(msg: NegotiationResponse): Boolean = !awaitResponseFor_?(msg.negotiation, msg.respondingTo)
   }
 
   def awaitResponseFor_?(neg: NegotiationId, id: UUID): Boolean =
