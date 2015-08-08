@@ -2,6 +2,7 @@ package feh.tec.agents.comm
 
 import java.io.File
 import akka.util.Timeout
+import feh.tec.agents.comm.Report
 import feh.util.file._
 import akka.actor.SupervisorStrategy.{Escalate, Resume}
 import akka.actor.ActorDSL._
@@ -89,13 +90,35 @@ object Report{
     def isSevere = true
     def underlyingMessage = Some(unknown)
   }
+
+  case class Error(agent: AgentId, err: Throwable)(implicit val sender: AgentRef) extends Report{
+    def reporter = sender
+
+    val tpe = "Error"
+    def isSevere = true
+    def underlyingMessage = None
+    val asString = ""
+
+  }
 }
 
 class ReportLogFormat(format: Report => String){ def apply(rep: Report) = format(rep) }
 
 object ReportLogFormat{
-  implicit object Default extends ReportLogFormat(_.toString)
+
+  trait ErrorsLogging extends ReportLogFormat{
+
+    def formatError(err: Report.Error) = err.agent + " failed: " + err.err.getMessage // todo
+
+    override def apply(rep: Report) = rep match {
+      case err: Report.Error => formatError(err)
+      case _                 => super.apply(rep)
+    }
+  }
+
+  implicit object Default extends ReportLogFormat(_.toString) with ErrorsLogging
   implicit object Pretty  extends ReportLogFormat(report => ("%-21s" format report.tpe) + report.asString)
+                          with ErrorsLogging
 }
 
 class ReportStdPrinter(val id: SystemAgentId)(implicit format: ReportLogFormat) extends ReportLogger{
@@ -125,6 +148,8 @@ class ReportDistributedPrinter(val id: SystemAgentId, logDir: Path)(implicit for
   def log(report: Report): Unit = writerFor(report.by) ! report
 
   protected def logFile(id: AgentId): File = (logDir / (id.name + ".log")).file
+  protected def errFile(id: AgentId): File = (logDir / (id.name + ".error.log")).file
+
   private val writers = mutable.Map.empty[AgentId, ActorRef]
   protected def writerFor(ag: AgentRef): ActorRef = {
     writers.getOrElseUpdate(ag.id,

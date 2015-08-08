@@ -7,10 +7,13 @@ import scala.collection.mutable
 import feh.util._
 
 trait NegotiationController extends SystemAgent{
-  protected val negotiatorsByRole_ = mutable.Map    .empty[NegotiationRole, Seq[NegotiatingAgentRef]]
+  protected val negotiatorsByRole_ = mutable.HashMap.empty[NegotiationRole, Seq[NegotiatingAgentRef]]
   private val negotiatorIndices    = mutable.HashMap.empty[NegotiationRole, Int]
+  private val negotiatorsSearch    = mutable.HashMap.empty[ActorRef, NegotiatingAgentRef]
 
   def negotiatorsByRole = negotiatorsByRole_.toMap
+
+  def searchNegotiator = negotiatorsSearch.get _
 
   def nameForAgent(role: NegotiationRole, index: Int): String
 
@@ -54,7 +57,11 @@ object NegotiationController{
 
     private def initialNegotiators(implicit actFactory: ActorRefFactory) = mkNegotiators _ $ initialNegotiatorsCreators
 
-    override def start(): Unit = negotiatorsByRole_ ++= initialNegotiators(context)
+    override def start(): Unit = initialNegotiators(context) |> {
+      initials =>
+        negotiatorsByRole_ ++= initials
+        negotiatorsSearch ++= initials.values.flatten.groupBy(_.ref).mapValues(_.ensuring(_.size == 1).head)
+    }
   }
 
   trait AgentsManipulation{
@@ -62,6 +69,7 @@ object NegotiationController{
 
     protected def addAgent(ref: NegotiatingAgentRef) = {
       negotiatorsByRole_ <<= (ref.id.role, _.map(ref +: _) getOrElse Seq(ref))
+      negotiatorsSearch  += ref.ref -> ref
     }
 
     def newAgent(creator: NegotiatingAgentCreator[_])(implicit actFactory: ActorRefFactory) = {
@@ -76,6 +84,7 @@ object NegotiationController{
       agRef =>
         agRef ! SystemMessage.Stop()
         negotiatorsByRole_(id.role) = negotiatorsByRole(id.role).filter(_.id != id)
+        negotiatorsSearch -= ref.ref
     }
   }
 
