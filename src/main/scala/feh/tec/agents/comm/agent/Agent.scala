@@ -94,6 +94,7 @@ trait Negotiating{
   def negotiations: Map[NegotiationId, Negotiation] = _negotiations.toMap
 
   def negotiation(id: NegotiationId): Negotiation = _negotiations(id)
+  def negotiation(msg: NegotiationMessage): Negotiation = _negotiations(msg.negotiation)
 
   def eachNegotiation(f: (Negotiation => Unit)*): Unit = negotiations.mapValues(neg => f.foreach(_(neg)))
 }
