@@ -100,6 +100,14 @@ object Report{
     val asString = ""
 
   }
+
+  case class Debug(title: String, msg: String)(implicit val sender: AgentRef) extends Report{
+    def isSevere = false
+    def underlyingMessage = None
+
+    val tpe = "DEBUG:" + title
+    val asString = msg
+  }
 }
 
 class ReportLogFormat(format: Report => String){ def apply(rep: Report) = format(rep) }
