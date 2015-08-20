@@ -48,7 +48,7 @@ trait MessageSending {
     }
   }
 
-  implicit class SenAskMessage(id: AgentRef)(implicit timeout: Timeout){
+  implicit class SendAskMessage(id: AgentRef)(implicit timeout: Timeout){
     def ?(msg: Message) = {
       onMessageSent(msg, id)
       akka.pattern.ask(id.ref, msg)
