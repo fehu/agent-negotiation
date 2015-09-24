@@ -4,7 +4,7 @@ name := "agents-comm"
 
 version := "0.2-SNAPSHOT"
 
-scalaVersion  := "2.11.5"
+scalaVersion  := "2.11.7"
 
 resolvers += "Fehu's github repo" at "http://fehu.github.io/repo"
 
