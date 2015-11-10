@@ -1,15 +1,15 @@
 package feh.tec.agents.comm
 
 import java.io.File
-import akka.util.Timeout
-import feh.tec.agents.comm.Report
-import feh.util.file._
-import akka.actor.SupervisorStrategy.{Escalate, Resume}
+
 import akka.actor.ActorDSL._
 import akka.actor._
 import akka.pattern.ask
+import akka.util.Timeout
 import feh.tec.agents.comm.agent.SystemSupport
 import feh.util._
+import feh.util.file._
+
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.language.postfixOps
