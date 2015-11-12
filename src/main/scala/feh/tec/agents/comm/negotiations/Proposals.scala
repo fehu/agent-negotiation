@@ -17,7 +17,11 @@ object Proposals {
   trait Proposal extends NegotiationProposal{   val tpe = "Proposal" }
   
   trait Acceptance extends ProposalMessage with NegotiationResponse{ val tpe = "Acceptance" }
-  trait Rejection  extends ProposalMessage with NegotiationResponse{ val tpe = "Rejection" }
+  trait Rejection  extends ProposalMessage with NegotiationResponse{
+    val tpe = "Rejection"
+
+    def isUnconditional: Boolean
+  }
 
   trait CounterProposal  extends NegotiationProposal with Rejection {  override val tpe = "CounterProposal" }
 
