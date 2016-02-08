@@ -1,0 +1,531 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>NegotiationVar - feh.tec.agents.comm.NegotiationVar</title>
+          <meta name="description" content="NegotiationVar - feh.tec.agents.comm.NegotiationVar" />
+          <meta name="keywords" content="NegotiationVar feh.tec.agents.comm.NegotiationVar" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      <script type="text/javascript" src="../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../lib/diagrams.js" id="diagrams-js"></script>
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'feh.tec.agents.comm.NegotiationVar';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="NegotiationVar$.html" title="See companion object"><img alt="Class/Object" src="../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="feh">feh</a>.<a href="../../package.html" class="extype" name="feh.tec">tec</a>.<a href="../package.html" class="extype" name="feh.tec.agents">agents</a>.<a href="package.html" class="extype" name="feh.tec.agents.comm">comm</a></p>
+        <h1><a href="NegotiationVar$.html" title="See companion object">NegotiationVar</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="NegotiationVar$.html" title="See companion object">object NegotiationVar</a>
+            | <a href="package.html" class="extype" name="feh.tec.agents.comm">package comm</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">NegotiationVar</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="negotiations/Proposals$$Vars$$AwaitingResponse$.html" class="extype" name="feh.tec.agents.comm.negotiations.Proposals.Vars.AwaitingResponse">AwaitingResponse</a>, <a href="agent/RegisteringConfigurations$$CurrentConfigurations$.html" class="extype" name="feh.tec.agents.comm.agent.RegisteringConfigurations.CurrentConfigurations">CurrentConfigurations</a>, <a href="negotiations/Issues$$Vars$$CurrentIssues$.html" class="extype" name="feh.tec.agents.comm.negotiations.Issues.Vars.CurrentIssues">CurrentIssues</a>, <a href="negotiations/Proposals$$Vars$$CurrentProposal$.html" class="extype" name="feh.tec.agents.comm.negotiations.Proposals.Vars.CurrentProposal">CurrentProposal</a>, <a href="negotiations/DomainsIterating$$Vars$$DomainIterator$.html" class="extype" name="feh.tec.agents.comm.negotiations.DomainsIterating.Vars.DomainIterator">DomainIterator</a>, <a href="agent/RegisteringConfigurations$$FailedConfigurations$.html" class="extype" name="feh.tec.agents.comm.agent.RegisteringConfigurations.FailedConfigurations">FailedConfigurations</a>, <a href="negotiations/Issues$$Vars$$Issue.html" class="extype" name="feh.tec.agents.comm.negotiations.Issues.Vars.Issue">Issue</a>, <a href="negotiations/Issues$$Vars$$IssueDomain.html" class="extype" name="feh.tec.agents.comm.negotiations.Issues.Vars.IssueDomain">IssueDomain</a>, <a href="NegotiationVarDefault.html" class="extype" name="feh.tec.agents.comm.NegotiationVarDefault">NegotiationVarDefault</a>, <a href="negotiations/Prioritized$$Vars$$Priority$.html" class="extype" name="feh.tec.agents.comm.negotiations.Prioritized.Vars.Priority">Priority</a>, <a href="negotiations/Proposals$$Vars$$ProposalAcceptance$.html" class="extype" name="feh.tec.agents.comm.negotiations.Proposals.Vars.ProposalAcceptance">ProposalAcceptance</a>, <a href="NegotiationVar$$Scope$.html" class="extype" name="feh.tec.agents.comm.NegotiationVar.Scope">Scope</a>, <a href="NegotiationVar$$State$.html" class="extype" name="feh.tec.agents.comm.NegotiationVar.State">State</a></div>
+          </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">Type Hierarchy</span>
+                <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#diagrams" target="_blank" class="diagram-help">Learn more about scaladoc diagrams</a>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 1634.50 155.00" height="155pt" width="1635pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 151)" class="graph" id="graph0"><polygon points="-4,4 -4,-151 1630.5,-151 1630.5,4 -4,4" stroke="none" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="feh.tec.agents.comm.NegotiationVar (this class)" xlink:href="#inheritance-diagram"><polygon points="923.5,-86 815.5,-86 815.5,-61 923.5,-61 923.5,-86" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../../../lib/class_diagram.png" y="-80.5" x="825.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-70.5" x="846.5" text-anchor="start">NegotiationVar</text></a></g></g><!-- node1 --><g class="node object" id="graph1_1"><g id="a_object|graph1_1"><a xlink:title="feh.tec.agents.comm.negotiations.Proposals.Vars.AwaitingResponse" xlink:href="negotiations/Proposals$$Vars$$AwaitingResponse$.html#inheritance-diagram"><polygon points="125,-25 7.10543e-15,-25 7.10543e-15,-0 125,-0 125,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="31.5" text-anchor="start">AwaitingResponse</text></a></g></g><!-- node0&#45;&gt;node1 --><g class="edge inheritance" id="graph1_0_1"><g id="a_inheritance|graph1_0_1"><a xlink:title="AwaitingResponse is a subtype of NegotiationVar"><path d="M810.302,-70.56C685.201,-66.0461 384.866,-53.022 134.5,-25 131.481,-24.6621 128.395,-24.2864 125.281,-23.8831" stroke="#d4d4d4" fill="none"></path><polygon points="810.343,-72.3126 815.403,-70.7429 810.469,-68.8148 810.343,-72.3126" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node object" id="graph1_2"><g id="a_object|graph1_2"><a xlink:title="feh.tec.agents.comm.agent.RegisteringConfigurations.CurrentConfigurations" xlink:href="agent/RegisteringConfigurations$$CurrentConfigurations$.html#inheritance-diagram"><polygon points="281.5,-25 143.5,-25 143.5,-0 281.5,-0 281.5,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="153.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="174.5" text-anchor="start">CurrentConfigurations</text></a></g></g><!-- node0&#45;&gt;node2 --><g class="edge inheritance" id="graph1_0_2"><g id="a_inheritance|graph1_0_2"><a xlink:title="CurrentConfigurations is a subtype of NegotiationVar"><path d="M809.884,-68.8829C704.772,-62.2213 479.695,-46.6848 290.5,-25 287.644,-24.6727 284.732,-24.3217 281.792,-23.9531" stroke="#d4d4d4" fill="none"></path><polygon points="810.004,-70.6438 815.104,-69.2127 810.224,-67.1508 810.004,-70.6438" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node object" id="graph1_3"><g id="a_object|graph1_3"><a xlink:title="feh.tec.agents.comm.negotiations.Issues.Vars.CurrentIssues" xlink:href="negotiations/Issues$$Vars$$CurrentIssues$.html#inheritance-diagram"><polygon points="405,-25 300,-25 300,-0 405,-0 405,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="310.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="331.5" text-anchor="start">CurrentIssues</text></a></g></g><!-- node0&#45;&gt;node3 --><g class="edge inheritance" id="graph1_0_3"><g id="a_inheritance|graph1_0_3"><a xlink:title="CurrentIssues is a subtype of NegotiationVar"><path d="M810.294,-67.8298C723.296,-60.6256 555.921,-45.4645 414.5,-25 411.466,-24.561 408.355,-24.0805 405.218,-23.5727" stroke="#d4d4d4" fill="none"></path><polygon points="810.27,-69.5837 815.397,-68.2509 810.557,-66.0955 810.27,-69.5837" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node object" id="graph1_4"><g id="a_object|graph1_4"><a xlink:title="feh.tec.agents.comm.negotiations.Proposals.Vars.CurrentProposal" xlink:href="negotiations/Proposals$$Vars$$CurrentProposal$.html#inheritance-diagram"><polygon points="537.5,-25 423.5,-25 423.5,-0 537.5,-0 537.5,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="433.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="454.5" text-anchor="start">CurrentProposal</text></a></g></g><!-- node0&#45;&gt;node4 --><g class="edge inheritance" id="graph1_0_4"><g id="a_inheritance|graph1_0_4"><a xlink:title="CurrentProposal is a subtype of NegotiationVar"><path d="M810.447,-64.2945C745.631,-55.1766 638.538,-39.7834 546.5,-25 543.629,-24.5389 540.689,-24.0581 537.722,-23.566" stroke="#d4d4d4" fill="none"></path><polygon points="810.231,-66.0312 815.426,-64.9942 810.718,-62.5653 810.231,-66.0312" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node object" id="graph1_5"><g id="a_object|graph1_5"><a xlink:title="feh.tec.agents.comm.negotiations.DomainsIterating.Vars.DomainIterator" xlink:href="negotiations/DomainsIterating$$Vars$$DomainIterator$.html#inheritance-diagram"><polygon points="663.5,-25 555.5,-25 555.5,-0 663.5,-0 663.5,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="565.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="586.5" text-anchor="start">DomainIterator</text></a></g></g><!-- node0&#45;&gt;node5 --><g class="edge inheritance" id="graph1_0_5"><g id="a_inheritance|graph1_0_5"><a xlink:title="DomainIterator is a subtype of NegotiationVar"><path d="M813.86,-59.8739C768.419,-49.5624 704.716,-35.1068 660.563,-25.0875" stroke="#d4d4d4" fill="none"></path><polygon points="813.489,-61.5842 818.752,-60.9841 814.263,-58.171 813.489,-61.5842" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node6 --><g class="node object" id="graph1_6"><g id="a_object|graph1_6"><a xlink:title="feh.tec.agents.comm.agent.RegisteringConfigurations.FailedConfigurations" xlink:href="agent/RegisteringConfigurations$$FailedConfigurations$.html#inheritance-diagram"><polygon points="813.5,-25 681.5,-25 681.5,-0 813.5,-0 813.5,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="691.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="712.5" text-anchor="start">FailedConfigurations</text></a></g></g><!-- node0&#45;&gt;node6 --><g class="edge inheritance" id="graph1_0_6"><g id="a_inheritance|graph1_0_6"><a xlink:title="FailedConfigurations is a subtype of NegotiationVar"><path d="M841.043,-58.7381C819.991,-48.5571 791.627,-34.8399 771.669,-25.1884" stroke="#d4d4d4" fill="none"></path><polygon points="840.424,-60.3827 845.688,-60.9841 841.948,-57.2318 840.424,-60.3827" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node7 --><g class="node class" id="graph1_7"><g id="a_class|graph1_7"><a xlink:title="feh.tec.agents.comm.negotiations.Issues.Vars.Issue" xlink:href="negotiations/Issues$$Vars$$Issue.html#inheritance-diagram"><polygon points="907.5,-25 831.5,-25 831.5,-0 907.5,-0 907.5,-25" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../../../lib/class_diagram.png" y="-19.5" x="841.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="862.5" text-anchor="start">Issue[I]</text></a></g></g><!-- node0&#45;&gt;node7 --><g class="edge inheritance" id="graph1_0_7"><g id="a_inheritance|graph1_0_7"><a xlink:title="Issue[I] is a subtype of NegotiationVar"><path d="M869.5,-55.6874C869.5,-45.9173 869.5,-33.8534 869.5,-25.1323" stroke="#d4d4d4" fill="none"></path><polygon points="867.75,-55.8435 869.5,-60.8435 871.25,-55.8435 867.75,-55.8435" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node8 --><g class="node class" id="graph1_8"><g id="a_class|graph1_8"><a xlink:title="feh.tec.agents.comm.negotiations.Issues.Vars.IssueDomain" xlink:href="negotiations/Issues$$Vars$$IssueDomain.html#inheritance-diagram"><polygon points="1035,-25 926,-25 926,-0 1035,-0 1035,-25" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../../../lib/class_diagram.png" y="-19.5" x="936.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="957.5" text-anchor="start">IssueDomain[I]</text></a></g></g><!-- node0&#45;&gt;node8 --><g class="edge inheritance" id="graph1_0_8"><g id="a_inheritance|graph1_0_8"><a xlink:title="IssueDomain[I] is a subtype of NegotiationVar"><path d="M895.875,-58.4807C914.978,-48.3269 940.505,-34.7588 958.51,-25.1884" stroke="#d4d4d4" fill="none"></path><polygon points="894.759,-57.0921 891.165,-60.9841 896.402,-60.1826 894.759,-57.0921" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node9 --><g class="node class" id="graph1_9"><g id="a_class|graph1_9"><a xlink:title="feh.tec.agents.comm.NegotiationVarDefault" xlink:href="NegotiationVarDefault.html#inheritance-diagram"><polygon points="1204,-25 1053,-25 1053,-0 1204,-0 1204,-25" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../../../lib/class_diagram.png" y="-19.5" x="1063.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="1084.5" text-anchor="start">NegotiationVarDefault[V]</text></a></g></g><!-- node0&#45;&gt;node9 --><g class="edge inheritance" id="graph1_0_9"><g id="a_inheritance|graph1_0_9"><a xlink:title="NegotiationVarDefault[V] is a subtype of NegotiationVar"><path d="M925.202,-59.8112C970.449,-49.5039 1033.74,-35.0865 1077.63,-25.0875" stroke="#d4d4d4" fill="none"></path><polygon points="924.539,-58.1672 920.053,-60.9841 925.316,-61.5798 924.539,-58.1672" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node10 --><g class="node object" id="graph1_10"><g id="a_object|graph1_10"><a xlink:title="feh.tec.agents.comm.negotiations.Prioritized.Vars.Priority" xlink:href="negotiations/Prioritized$$Vars$$Priority$.html#inheritance-diagram"><polygon points="1297,-25 1222,-25 1222,-0 1297,-0 1297,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="1232.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="1253.5" text-anchor="start">Priority</text></a></g></g><!-- node0&#45;&gt;node10 --><g class="edge inheritance" id="graph1_0_10"><g id="a_inheritance|graph1_0_10"><a xlink:title="Priority is a subtype of NegotiationVar"><path d="M929,-66.2562C997.837,-58.5773 1114.42,-44.1677 1213.5,-25 1216.25,-24.4684 1219.08,-23.8752 1221.92,-23.246" stroke="#d4d4d4" fill="none"></path><polygon points="928.495,-64.5515 923.718,-66.8426 928.881,-68.0301 928.495,-64.5515" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node11 --><g class="node object" id="graph1_11"><g id="a_object|graph1_11"><a xlink:title="feh.tec.agents.comm.negotiations.Proposals.Vars.ProposalAcceptance" xlink:href="negotiations/Proposals$$Vars$$ProposalAcceptance$.html#inheritance-diagram"><polygon points="1450,-25 1315,-25 1315,-0 1450,-0 1450,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="1325.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="1346.5" text-anchor="start">ProposalAcceptance</text></a></g></g><!-- node0&#45;&gt;node11 --><g class="edge inheritance" id="graph1_0_11"><g id="a_inheritance|graph1_0_11"><a xlink:title="ProposalAcceptance is a subtype of NegotiationVar"><path d="M928.936,-66.8365C1013.1,-58.6355 1171.77,-42.5072 1306.5,-25 1309.28,-24.6389 1312.11,-24.2596 1314.98,-23.8676" stroke="#d4d4d4" fill="none"></path><polygon points="928.555,-65.1152 923.748,-67.3412 928.894,-68.5988 928.555,-65.1152" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node12 --><g class="node object" id="graph1_12"><g id="a_object|graph1_12"><a xlink:title="feh.tec.agents.comm.NegotiationVar.Scope" xlink:href="NegotiationVar$$Scope$.html#inheritance-diagram"><polygon points="1540.5,-25 1468.5,-25 1468.5,-0 1540.5,-0 1540.5,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="1478.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="1499.5" text-anchor="start">Scope</text></a></g></g><!-- node0&#45;&gt;node12 --><g class="edge inheritance" id="graph1_0_12"><g id="a_inheritance|graph1_0_12"><a xlink:title="Scope is a subtype of NegotiationVar"><path d="M928.868,-71.0507C1035.7,-67.7048 1267.12,-57.087 1459.5,-25 1462.36,-24.5224 1465.31,-23.9518 1468.26,-23.3236" stroke="#d4d4d4" fill="none"></path><polygon points="928.509,-69.3108 923.565,-71.214 928.617,-72.8091 928.509,-69.3108" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node13 --><g class="node object" id="graph1_13"><g id="a_object|graph1_13"><a xlink:title="feh.tec.agents.comm.NegotiationVar.State" xlink:href="NegotiationVar$$State$.html#inheritance-diagram"><polygon points="1626.5,-25 1558.5,-25 1558.5,-0 1626.5,-0 1626.5,-25" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="1568.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.5" x="1589.5" text-anchor="start">State</text></a></g></g><!-- node0&#45;&gt;node13 --><g class="edge inheritance" id="graph1_0_13"><g id="a_inheritance|graph1_0_13"><a xlink:title="State is a subtype of NegotiationVar"><path d="M928.874,-72.1624C1047.59,-70.6509 1322.34,-62.949 1549.5,-25 1552.4,-24.5161 1555.38,-23.9225 1558.36,-23.2624" stroke="#d4d4d4" fill="none"></path><polygon points="928.662,-70.4148 923.684,-72.2258 928.705,-73.9145 928.662,-70.4148" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node14 --><g class="node class" id="graph1_14"><g id="a_class|graph1_14"><a xlink:title="scala.AnyRef"><polygon points="907.5,-147 831.5,-147 831.5,-122 907.5,-122 907.5,-147" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../../../lib/class_diagram.png" y="-141.5" x="841.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-131.5" x="862.5" text-anchor="start">AnyRef</text></a></g></g><!-- node14&#45;&gt;node0 --><g class="edge inheritance" id="graph1_14_0"><g id="a_inheritance|graph1_14_0"><a xlink:title="NegotiationVar is a subtype of AnyRef"><path d="M869.5,-116.687C869.5,-106.917 869.5,-94.8534 869.5,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="867.75,-116.843 869.5,-121.843 871.25,-116.844 867.75,-116.843" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+              </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="feh.tec.agents.comm.NegotiationVar"><span>NegotiationVar</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="feh.tec.agents.comm.NegotiationVar#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():feh.tec.agents.comm.NegotiationVar"></a>
+      <a id="&lt;init&gt;:NegotiationVar"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">NegotiationVar</span><span class="params">()</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@&lt;init&gt;():feh.tec.agents.comm.NegotiationVar" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="feh.tec.agents.comm.NegotiationVar.T" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="T"></a>
+      <a id="T:T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">T</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@T" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@##():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@toString():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#feh.tec.agents.comm.NegotiationVar@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
