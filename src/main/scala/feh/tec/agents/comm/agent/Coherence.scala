@@ -47,7 +47,7 @@ trait Coherence{
     /** Coherence context value. */
     type Value
 
-    def toDouble: Value => Double
+    def toDouble: Value => Option[Double]
 
     type Input = Graph
     /** The [[process]] result is asynchronous to avoid deadlocks. */
@@ -279,7 +279,7 @@ trait Coherence{
                 g0@GraphNodes(nodesLast)   <- last
                 g1@GraphNodes(Seq(n1)) <- size1
                 bRels <- nodesLast.map(g => rels.map(_(g, n1)))
-                if bRels.forall(c.toDouble andThen (_ > threshold))
+                if bRels.forall(c.toDouble andThen (_.exists(_ > threshold)))
               } yield g0 :+: g1
 
               if (nextJoin.nonEmpty) rec(acc ++ last, nextJoin)
@@ -311,19 +311,19 @@ trait Coherence{
 
 
         val binariesIn0 = subGraph.relationsWithin(c.binaryRelationsWithin.toSeq).map(_._2.map(c.toDouble))
-        if (binariesIn0.exists(_.exists(_ <= 0))) return 0d
-        val binariesIn = binariesIn0.map(_.product)
+        if (binariesIn0.exists(_.exists(_.exists(_ <= 0)))) return 0d
+        val binariesIn = binariesIn0.map(_.flatten.product)
         val binaryIn = binariesIn.sum / binariesIn.length
 
         val binariesDG0 = subGraph.relationsWith(c.defaultGraph)(c.binaryRelationsWithDefault.toSeq).map(_._2.map(c.toDouble))
-        if (binariesDG0.exists(_.exists(_ <= 0))) return 0d
-        val binariesDG = binariesDG0.map(_.product)
+        if (binariesDG0.exists(_.exists(_.exists(_ <= 0)))) return 0d
+        val binariesDG = binariesDG0.map(_.flatten.product)
         val binaryDG = binariesDG.sum / binariesDG.length
 
 
         val whole0 = c.wholeRelations.map(c toDouble _(subGraph))
-        if(whole0.exists(_ <= 0)) return 0d
-        val whole = whole0.product
+        if(whole0.exists(_.exists(_ <= 0))) return 0d
+        val whole = whole0.flatten.product
 
         binaryIn*binaryDG*whole
       }
@@ -340,8 +340,8 @@ trait Coherence{
         val outer = subGraph.relationsWith[Double](complement)(Seq({
           case (x, y) =>
             val cohs = c.binaryRelationsWithin.toSeq.map(c toDouble _(x, y) match {
-              case d if d < 0 => -d
-              case _          => 0d
+              case Some(d) if d < 0 => -d
+              case _                => 0d
             }).filterNot(0 == _)
             if(cohs.nonEmpty) cohs.sum / cohs.length else 0d
         }))
