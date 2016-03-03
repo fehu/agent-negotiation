@@ -41,17 +41,26 @@ trait ReportingSystemSupport extends Reporting with SystemSupport{
   protected def unknownSystemMessage(sys: SystemMessage) = reportTo ! Report.UnknownSystemMessage(sys)
 }
 
-trait NegotiationSystemSupport extends Negotiating with SystemSupport{
+trait KnownAgentsSupport extends SystemSupport{
   agent: AgentActor =>
 
   override def systemMessageReceived = super.systemMessageReceived orElse{
-    case SystemMessage.SetScope(neg, scope) => negotiation(neg).set(NegotiationVar.Scope)(scope)
+    case SystemMessage.SetScope(neg, scope) => updateScope(neg, _ => scope)
     case SystemMessage.AddScope(neg, scope) => updateScope(neg, _ ++ scope)
     case SystemMessage.RmScope (neg, scope) => updateScope(neg, _ -- scope)
+  }
+
+  protected def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef])
+}
+
+trait NegotiationSystemSupport extends Negotiating with KnownAgentsSupport{
+  agent: AgentActor =>
+
+  override def systemMessageReceived = super.systemMessageReceived orElse{
     case SystemMessage.SetPriority(neg, priority) => negotiation(neg).set(Priority)(priority)
   }
 
-  private def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef]) =
+  protected def updateScope(of: NegotiationId, upd: Set[NegotiatingAgentRef] => Set[NegotiatingAgentRef]) =
     negotiation(of).transformOpt(NegotiationVar.Scope)(
       opt => upd(opt.getOrElse(Set()))
     )

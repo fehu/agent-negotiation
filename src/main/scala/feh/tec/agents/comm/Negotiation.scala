@@ -12,6 +12,8 @@ trait NegotiationId{
 
 object NegotiationId{
   def apply(id: String) = SimpleNegotiationId(id)
+
+  object Single extends NegotiationId{ def name = "default" }
 }
 
 case class SimpleNegotiationId(name: String) extends NegotiationId
