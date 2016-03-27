@@ -8,7 +8,7 @@ scalaVersion  := "2.11.7"
 
 resolvers += "Fehu's github repo" at "http://fehu.github.io/repo"
 
-libraryDependencies += "feh.util" %% "util" % "1.0.9-SNAPSHOT"
+libraryDependencies += "feh.util" %% "util" % "1.1.0-SNAPSHOT"
 
 libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.4.0"
 

@@ -5,14 +5,12 @@ import feh.util._
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.higherKinds
+import scala.language.{implicitConversions, higherKinds}
 
 /** Abstract <b>coherence</b> definition.
  *  It is based on coherence assessment of <i>information graphs</i> throughout the contexts.
  */
 trait Coherence{
-
-  implicit def execContext: ExecutionContext
 
   /** A node of information graphs. */
   type InformationPiece
@@ -53,6 +51,8 @@ trait Coherence{
     /** The [[process]] result is asynchronous to avoid deadlocks. */
     type Result = Future[Seq[ThisSolutionCandidate[C]]]
 
+    implicit def ex: ExecutionContext
+
     /** Base binary relation. */
     trait RelationBinary extends ((InformationPiece, InformationPiece) => Value)
     /** Base relation on whole [[Graph]]. */
@@ -74,7 +74,8 @@ trait Coherence{
   implicit def contextToContainer[C <: Context[C]](c: C): ContextContainer = ContextContainer(c)
 
   /** Propagates the initial solutions through the given contexts. Asynchronous. */
-  def propagateSolutions(initial: Set[SomeSolutionSuccess], contexts: Seq[ContextContainer]): Future[Set[SolutionCandidate[_]]] =
+  def propagateSolutions(initial: Set[SomeSolutionSuccess], contexts: Seq[ContextContainer])
+                        (implicit ex: ExecutionContext): Future[Set[SolutionCandidate[_]]] =
     Y[(List[ContextContainer], Set[SomeSolutionSuccess], Set[SolutionFailure[_]]), Future[Set[SolutionCandidate[_]]]](
       rec => {
         case (ContextContainer(c) :: cs, successful, failed) =>
@@ -87,7 +88,8 @@ trait Coherence{
     )((contexts.toList, initial, Set()))
 
 
-  protected def graphThroughContext[C <: Context[C]](in: Set[SomeSolutionSuccess], c: C): Future[(Set[SolutionSuccess[C]], Set[SolutionFailure[C]])] =
+  protected def graphThroughContext[C <: Context[C]](in: Set[SomeSolutionSuccess], c: C)
+                                                    (implicit ex: ExecutionContext): Future[(Set[SolutionSuccess[C]], Set[SolutionFailure[C]])] =
     Future.sequence(in.toSeq.map{
       lastSuccess =>
         c.process(lastSuccess.g).map(_.map(_.withPrevious(lastSuccess)))
@@ -174,7 +176,7 @@ trait Coherence{
   case class SolutionFailure[C <: Context[C]](g: Graph,
                                               failedAt: C,
                                               reason: Any,
-                                              previous: SomeSolutionSuccess ) extends SolutionCandidate[C]
+                                              previous: Option[SomeSolutionSuccess] ) extends SolutionCandidate[C]
   {
     final def isSuccess = false
   }
@@ -183,10 +185,12 @@ trait Coherence{
   case class SomeSolutionCandidate(get: SolutionCandidate[C] forSome{ type C <: Context[C]})
   case class SomeSolutionSuccess(get: SolutionSuccess[C] forSome{ type C <: Context[C]})
 
+  implicit def SolutionCandidate2SomeSolutionCandidate[S <: SolutionCandidate[_]](s: S): SomeSolutionCandidate =
+    SomeSolutionCandidate(s.asInstanceOf)
   implicit def GetSomeSolutionSuccess(s: SomeSolutionSuccess): SolutionSuccess[C] forSome{ type C <: Context[C]} = s.get
 
 
-  protected sealed trait ThisSolutionCandidate[C <: Context[C]]{
+  sealed trait ThisSolutionCandidate[C <: Context[C]]{
     def isSuccess: Boolean
     final def isFailure = !isSuccess
 
@@ -194,20 +198,23 @@ trait Coherence{
     final def failure = if(isFailure) Some(this.asInstanceOf[ThisSolutionCandidate.ThisSolutionFailure[C]]) else None
 
     def withPrevious(prev: SomeSolutionSuccess): SolutionCandidate[C]
+    def withNoPrevious: SolutionCandidate[C]
   }
 
-  protected object ThisSolutionCandidate{
+  object ThisSolutionCandidate{
     case class ThisSolutionSuccess[C <: Context[C]](g: Graph,
                                                     c: C,
                                                     v: InUnitInterval.Excluding0) extends ThisSolutionCandidate[C]{
-      def withPrevious(prev: SomeSolutionSuccess): SolutionSuccess[C] = SolutionSuccess(g, c, v, Option(prev))
+      final def withPrevious(prev: SomeSolutionSuccess): SolutionSuccess[C] = SolutionSuccess(g, c, v, Option(prev))
+      final def withNoPrevious = withPrevious(null)
       final def isSuccess = true
     }
 
     case class ThisSolutionFailure[C <: Context[C]](g: Graph,
                                                     failedAt: C,
                                                     reason: Any) extends ThisSolutionCandidate[C]{
-      def withPrevious(prev: SomeSolutionSuccess): SolutionFailure[C] = SolutionFailure(g, failedAt, reason, prev)
+      final def withPrevious(prev: SomeSolutionSuccess): SolutionFailure[C] = SolutionFailure(g, failedAt, reason, Option(prev))
+      final def withNoPrevious = withPrevious(null)
       final def isSuccess = false
     }
   }
@@ -230,7 +237,7 @@ trait Coherence{
       * @param subGraph subgraph to assess (A).
       * @return a [[Double]] value in [0, 1] interval.
       */
-    def assessCoherence[C <: Context[C]](c: C, subGraph: Graph): InUnitInterval
+    def assessCoherence[C <: Context[C]](c: C, subGraph: Graph): InSomeUnitInterval
 
     /** Assesses coherence of a subgraph A, that is part of graph U.
       * Considers both inner (withing A) and outer (between A and U / A) coherence.
@@ -243,7 +250,7 @@ trait Coherence{
       * @param subGraph subgraph A to assess.
       * @return a [[Double]] value in [0, 1] interval.
       */
-    def assessCoherence[C <: Context[C]](c: C, graph: Graph, subGraph: Graph): InUnitInterval
+    def assessCoherence[C <: Context[C]](c: C, graph: Graph, subGraph: Graph): InSomeUnitInterval
   }
 
   /** Divide an information graph into acceptable sub-graphs in the given context.
@@ -307,34 +314,34 @@ trait Coherence{
         *
         * * in all cases: a relation value <= 0 results in 0 returned
         */
-      def assessCoherence[C <: Context[C]](c: C, subGraph: Graph): InUnitInterval = {
+      def assessCoherence[C <: Context[C]](c: C, subGraph: Graph): InSomeUnitInterval = {
 
 
         val binariesIn0 = subGraph.relationsWithin(c.binaryRelationsWithin.toSeq).map(_._2.map(c.toDouble))
-        if (binariesIn0.exists(_.exists(_.exists(_ <= 0)))) return 0d
+        if (binariesIn0.exists(_.exists(_.exists(_ <= 0)))) return InUnitInterval.Including(0)
         val binariesIn = binariesIn0.map(_.flatten.product)
         val binaryIn = binariesIn.sum / binariesIn.length
 
         val binariesDG0 = subGraph.relationsWith(c.defaultGraph)(c.binaryRelationsWithDefault.toSeq).map(_._2.map(c.toDouble))
-        if (binariesDG0.exists(_.exists(_.exists(_ <= 0)))) return 0d
+        if (binariesDG0.exists(_.exists(_.exists(_ <= 0)))) return InUnitInterval.Including(0)
         val binariesDG = binariesDG0.map(_.flatten.product)
         val binaryDG = binariesDG.sum / binariesDG.length
 
 
         val whole0 = c.wholeRelations.map(c toDouble _(subGraph))
-        if(whole0.exists(_.exists(_ <= 0))) return 0d
+        if(whole0.exists(_.exists(_ <= 0))) return InUnitInterval.Including(0)
         val whole = whole0.flatten.product
 
-        binaryIn*binaryDG*whole
+        InUnitInterval Excluding0 binaryIn*binaryDG*whole
       }
 
       /** 1. assesses inner coherence with `assessCoherence`.
         * 2. assesses outer coherence:
         *
         */
-      def assessCoherence[C <: Context[C]](c: C, graph: Graph, subGraph: Graph): InUnitInterval = {
+      def assessCoherence[C <: Context[C]](c: C, graph: Graph, subGraph: Graph): InSomeUnitInterval = {
         val inner = assessCoherence(c, subGraph)
-        if(inner.d == 0) return 0d
+        if(inner.doubleValue == 0) return InUnitInterval.Including(0)
 
         val complement = graph - subGraph
         val outer = subGraph.relationsWith[Double](complement)(Seq({
@@ -345,7 +352,7 @@ trait Coherence{
             }).filterNot(0 == _)
             if(cohs.nonEmpty) cohs.sum / cohs.length else 0d
         }))
-        outer.map(_._2.head).sum / outer.length
+        InUnitInterval.Excluding0(outer.map(_._2.head).sum / outer.length)
       }
     }
   }

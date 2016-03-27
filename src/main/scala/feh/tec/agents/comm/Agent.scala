@@ -26,7 +26,7 @@ sealed trait AgentRole{
   val role: String
 }
 
-case class NegotiationRole(role: String) extends AgentRole
+case class NegotiationRole(role: String, subRole: Option[String] = None) extends AgentRole
 case class SystemAgentRole(role: String) extends AgentRole
 case class UserAgentRole(role: String) extends AgentRole
 
