@@ -45,7 +45,7 @@ trait Coherence{
     /** Coherence context value. */
     type Value
 
-    def toDouble: Value => Option[Double]
+    def toDouble: C#Value => Option[Double]
 
     type Input = Graph
     /** The [[process]] result is asynchronous to avoid deadlocks. */
@@ -53,22 +53,24 @@ trait Coherence{
 
     implicit def ex: ExecutionContext
 
-    /** Base binary relation. */
-    trait RelationBinary extends ((InformationPiece, InformationPiece) => Value)
-    /** Base relation on whole [[Graph]]. */
-    trait RelationWhole  extends (Graph => Value)
-
     /** The context's default inf. graph. See [*]. */
     def defaultGraph: Graph
 
     /** Relations between the nodes of the assessed graph. */
-    def binaryRelationsWithin: Set[RelationBinary]
+    def binaryRelationsWithin: Set[RelationBinary[C]]
     /** Relations between the nodes of the assessed graph and the nodes of the default graph. */
-    def binaryRelationsWithDefault: Set[RelationBinary]
+    def binaryRelationsWithDefault: Set[RelationBinary[C]]
     /** Relations assessing the whole graph. */
-    def wholeRelations:  Set[RelationWhole]
+    def wholeRelations:  Set[RelationWhole[C]]
 
   }
+
+  /** Base binary relation. */
+  trait RelationBinary[C <: Context[C]] extends ((InformationPiece, InformationPiece) => C#Value)
+  /** Base relation on whole [[Graph]]. */
+  trait RelationWhole[C <: Context[C]]  extends (Graph => C#Value)
+
+
 
   case class ContextContainer(c: C forSome{ type C <: Context[C]} )
   implicit def contextToContainer[C <: Context[C]](c: C): ContextContainer = ContextContainer(c)
