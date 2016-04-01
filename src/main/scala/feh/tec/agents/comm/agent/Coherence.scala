@@ -1,5 +1,6 @@
 package feh.tec.agents.comm.agent
 
+import feh.util.InSomeUnitInterval.InUnitInterval2InSomeUnitInterval
 import feh.util._
 
 import scala.collection.generic.CanBuildFrom
@@ -144,6 +145,8 @@ trait Coherence{
     * @tparam C last entry's [[Context]].
     */
   sealed trait SolutionCandidate[C <: Context[C]]{
+    def coherence: InUnitInterval.Including
+
     def isSuccess: Boolean
     final def isFailure = !isSuccess
 
@@ -164,6 +167,7 @@ trait Coherence{
                                               v: InUnitInterval.Excluding0,
                                               previous: Option[SomeSolutionSuccess]) extends SolutionCandidate[C]
   {
+    final def coherence = v.wholeInterval
     final def isSuccess = true
   }
 
@@ -181,10 +185,17 @@ trait Coherence{
                                               previous: Option[SomeSolutionSuccess] ) extends SolutionCandidate[C]
   {
     final def isSuccess = false
+    final def coherence = InUnitInterval.Including(0)
   }
 
 
-  case class SomeSolutionCandidate(get: SolutionCandidate[C] forSome{ type C <: Context[C]})
+  case class SomeSolutionCandidate(get: SolutionCandidate[C] forSome{ type C <: Context[C]}){
+    final def coherence = get.coherence
+
+    final def isSuccess = get.isSuccess
+    final def isFailure = get.isFailure
+
+  }
   case class SomeSolutionSuccess(get: SolutionSuccess[C] forSome{ type C <: Context[C]})
 
   implicit def SolutionCandidate2SomeSolutionCandidate[S <: SolutionCandidate[_]](s: S): SomeSolutionCandidate =
